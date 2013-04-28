@@ -8,6 +8,61 @@
     <artifactId>jk</artifactId>
     <version>0.1-SNAPSHOT</version>
 
-    <package>jar</package>
-    
+    <packaging>jar</packaging>
+
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.8.2</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>1.9.5</version>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.2-beta-2</version>
+                <configuration>
+                    <appendAssemblyId>false</appendAssemblyId>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <archive>
+                      <manifest>
+                        <mainClass>com.mosaic.jk.Main</mainClass>
+                      </manifest>
+                      <!--<manifestEntries>-->
+                        <!--<Group-Id>${project.groupId}</Group-Id>-->
+                        <!--<Artifact-Id>${project.artifactId}</Artifact-Id>-->
+                        <!--<Version>${project.version}</Version>-->
+                        <!--<Git-SHA1>${git.buildNumber}</Git-SHA1>-->
+                        <!--<Built-When>${maven.build.timestamp}</Built-When>-->
+                        <!--<Build-Machine>${build.host.name}</Build-Machine>-->
+                        <!--<Build-Number>${CRUISE_PIPELINE_COUNTER}.${CRUISE_STAGE_COUNTER}</Build-Number>-->
+                      <!--</manifestEntries>-->
+                    </archive>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>assembly</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>
