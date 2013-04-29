@@ -17,7 +17,15 @@ public class ProjectWorkspaceImpl implements ProjectWorkspace {
         this.rootDir = rootDir;
     }
 
-    public String scanForMainClassFQN() {
+    public File[] scanForSourceDirectories() {
+        return new File[] {getSourceDirectory()};
+    }
+
+    public File[] scanForTestDirectories() {
+        return new File[] {};
+    }
+
+    public String[] scanForMainClassFQNs() {
         File f = scanForFile( "Main.java" );
         if ( f == null ) {
             return null;
@@ -31,7 +39,7 @@ public class ProjectWorkspaceImpl implements ProjectWorkspace {
 
             String relativeMainPath = mainPath.substring(srcPath.length()+1, mainPath.length()-5);
 
-            return relativeMainPath.replaceAll( "/", "." );
+            return new String[] {relativeMainPath.replaceAll( "/", "." )};
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

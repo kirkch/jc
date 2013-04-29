@@ -23,7 +23,7 @@ public class POMWriter {
 
     public void writeToPOM( Config config ) {
         String mavenArtefactName  = config.projectName.replaceAll( " ", "-" ).toLowerCase();
-        String mavenVersionNumber = config.version + "-SNAPSHOT";
+        String mavenVersionNumber = config.versionNumber + "-SNAPSHOT";
 
         env.info( "Maven", "Generating POM file" );
 
@@ -55,6 +55,17 @@ public class POMWriter {
     }
 
 
+//    <plugin>
+//    <groupId>org.apache.maven.plugins</groupId>
+//    <artifactId>maven-surefire-plugin</artifactId>
+//    <version>2.14.1</version>
+//    <configuration>
+//    <includes>
+//    <include>**/*Test*.java</include>
+//                    </includes>
+//                </configuration>
+//            </plugin>
+
 
     private void printManifestPlugin( Config config ) {
         out.printStartTag("build" );
@@ -78,7 +89,7 @@ public class POMWriter {
 
                 out.printStartTag("archive");
                 out.printStartTag("manifest");
-                out.printOnelineTag("mainClass", config.mainFQN);
+//                out.printOnelineTag("mainClass", config.mainFQN);
                 out.printEndTag( "manifest" );
                 out.printEndTag( "archive" );
             }

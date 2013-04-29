@@ -6,6 +6,7 @@ import com.mosaic.jk.utils.ListUtils;
 import com.mosaic.jk.utils.StringUtils;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -21,9 +22,9 @@ public class ConfigLoader {
 
         config.projectName = fetchDefaultProjectName( projectDirectory );
         config.groupId     = fetchDefaultGroupId( projectDirectory );
-        config.version     = fetchDefaultVersionNumber();
+        config.versionNumber = fetchDefaultVersionNumber();
 
-        config.mainFQN     = fetchDefaultMainFQN( fs );
+        config.modules       = fetchDefaultModules( fs );
 
         return config;
     }
@@ -62,8 +63,39 @@ public class ConfigLoader {
         return selectedChild1.getName() + "." + selectedChild2.getName();
     }
 
-    private String fetchDefaultMainFQN( ProjectWorkspace project ) {
-        return project.scanForMainClassFQN();
+    private List<ModuleConfig> fetchDefaultModules( ProjectWorkspace project ) {
+        List<ModuleConfig> modules = new ArrayList<ModuleConfig>();
+
+        ModuleConfig module = new ModuleConfig();
+
+        module.mainFQNs          = fetchDefaultMainFQN(project);
+        module.sourceDirectories = fetchDefaultSourceDirectories( project );
+        module.testDirectories   = fetchDefaultTestDirectories( project );
+        module.packageAs         = "JAR";
+        module.dependencies      = fetchDefaultDependencies();
+        modules.add( module );
+
+        return modules;
+    }
+
+    private List<Dependency> fetchDefaultDependencies() {
+        Dependency junit   = Dependency.test("junit","junit","4.8.2");
+        Dependency mockito = Dependency.test("org.mockito","mockito-all","1.9.5");
+
+        return Arrays.asList(junit,mockito);
+    }
+
+    private File[] fetchDefaultTestDirectories( ProjectWorkspace project ) {
+        return project.scanForTestDirectories();
+    }
+
+    private File[] fetchDefaultSourceDirectories( ProjectWorkspace project ) {
+        return project.scanForSourceDirectories();
+    }
+
+
+    private String[] fetchDefaultMainFQN( ProjectWorkspace project ) {
+        return project.scanForMainClassFQNs();
     }
 
 
