@@ -22,13 +22,19 @@ public class ProjectWorkspaceImpl implements ProjectWorkspace {
     }
 
     public File[] scanForTestDirectories() {
-        return new File[] {};
+        File testDir = new File(rootDir,"tests");
+
+        if ( testDir.exists() ) {
+            return new File[] {testDir};
+        } else {
+            return new File[] {};
+        }
     }
 
     public String[] scanForMainClassFQNs() {
         File f = scanForFile( "Main.java" );
         if ( f == null ) {
-            return null;
+            return new String[] {};
         }
 
         File sourceDirectory = getSourceDirectory();

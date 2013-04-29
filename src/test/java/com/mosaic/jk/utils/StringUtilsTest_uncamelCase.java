@@ -51,4 +51,9 @@ public class StringUtilsTest_uncamelCase {
         assertEquals( Arrays.asList("Hello","C"), StringUtils.tokeniseCamelCasedString( "helloC" ) );
     }
 
+    @Test
+    public void defect1_wordWhereOnlyVowelIsUpperCased() {
+        assertEquals( Arrays.asList("Single","Source","And","Test","Directories"), StringUtils.tokeniseCamelCasedString( "singleSourceAndTestDirectories" ) );
+    }
+
 }
