@@ -1,6 +1,9 @@
 package com.mosaic.jk;
 
 import java.io.File;
+import java.util.Arrays;
+
+import static org.junit.Assert.assertArrayEquals;
 
 /**
  *
@@ -25,4 +28,12 @@ public class TestUtils {
     public static File examplesDir() {
         return new File( projectRoot(), "examples" );
     }
+
+    public static <T extends Comparable> void assertArrayEqualsIgnoreOrder( T[] a, T[] b) {
+        Arrays.sort( a );
+        Arrays.sort(b);
+
+        assertArrayEquals( a, b );
+    }
+
 }

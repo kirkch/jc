@@ -2,12 +2,15 @@ package com.mosaic.jk.config;
 
 import com.mosaic.jk.io.ProjectWorkspace;
 import com.mosaic.jk.io.ProjectWorkspaceImpl;
+import com.mosaic.jk.utils.FileUtils;
 import com.mosaic.jk.utils.ListUtils;
 import com.mosaic.jk.utils.StringUtils;
+import com.mosaic.jk.utils.VoidFunction1;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -20,11 +23,13 @@ public class ConfigLoader {
 
         Config config = new Config();
 
-        config.projectName = fetchDefaultProjectName( projectDirectory );
-        config.groupId     = fetchDefaultGroupId( projectDirectory );
+        config.projectName   = fetchDefaultProjectName( projectDirectory );
         config.versionNumber = fetchDefaultVersionNumber();
 
         config.modules       = fetchDefaultModules( fs );
+
+        config.groupId       = inferDefaultGroupId( config.modules );
+
 
         return config;
     }
@@ -40,11 +45,27 @@ public class ConfigLoader {
         return ListUtils.concat( tokens, " " );
     }
 
-    private static final List<String> STANDARD_OPENING_PACKAGES = Arrays.asList( "com", "net", "org" );
+    private String inferDefaultGroupId( List<ModuleConfig> modules ) {
+        // Infers by sorting the full package names of the files under each source directory and then returning the
+        // first two elements of the first package. Else 'sandbox' as a default.
+        List<String> candidateGroupIds = new ArrayList<String>();
 
-    private String fetchDefaultGroupId( File projectDirectory ) {
-        File sourceDirectory = fetchSourceDirectory( projectDirectory );
+        for ( ModuleConfig module : modules ) {
+            for ( File sourceDirectory : module.sourceDirectories ) {
+                candidateGroupIds.add( inferDefaultGroupId(sourceDirectory) );
+            }
+        }
 
+        Collections.sort(candidateGroupIds);
+
+        if ( candidateGroupIds.size() == 0 ) {
+            return "sandbox";
+        }
+
+        return candidateGroupIds.get(0);
+    }
+
+    private String inferDefaultGroupId( File sourceDirectory ) {
         File[] children1 = sourceDirectory.listFiles();
 
         if ( children1 == null || children1.length == 0 ) {
@@ -68,9 +89,9 @@ public class ConfigLoader {
 
         ModuleConfig module = new ModuleConfig();
 
-        module.mainFQNs          = fetchDefaultMainFQN(project);
         module.sourceDirectories = fetchDefaultSourceDirectories( project );
         module.testDirectories   = fetchDefaultTestDirectories( project );
+        module.mainFQNs          = fetchDefaultMainFQN( module.sourceDirectories );
         module.packageAs         = "JAR";
         module.dependencies      = fetchDefaultDependencies();
         modules.add( module );
@@ -94,14 +115,23 @@ public class ConfigLoader {
     }
 
 
-    private String[] fetchDefaultMainFQN( ProjectWorkspace project ) {
-        return project.scanForMainClassFQNs();
+    private String[] fetchDefaultMainFQN( File[] sourceDirectories ) {
+        final List<String> mainClasses = new ArrayList<String>();
+
+        for ( final File sourceDirectory : sourceDirectories ) {
+            FileUtils.depthFirstScan( sourceDirectory, new VoidFunction1<File>() {
+                public void invoke( File f ) {
+                    if ( f.isFile() && f.getName().endsWith( "Main.java" ) ) {
+                        String relativePath = FileUtils.toRelativePath( sourceDirectory, f );
+
+                        mainClasses.add( relativePath.replaceAll( "/", "." ) );
+                    }
+                }
+            } );
+        }
+
+        return mainClasses.toArray( new String[mainClasses.size()] );
     }
 
-
-
-    private File fetchSourceDirectory( File projectDirectory ) {
-        return new File( projectDirectory, "src" );
-    }
 
 }

@@ -1,15 +1,28 @@
 package com.mosaic.jk.io;
 
+import com.mosaic.jk.utils.FileUtils;
+import com.mosaic.jk.utils.SetUtils;
+
 import java.io.File;
-import java.io.IOException;
+import java.io.FilenameFilter;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Set;
 
 /**
  *
  */
 public class ProjectWorkspaceImpl implements ProjectWorkspace {
+
+    private static final FilenameFilter BASEPACKAGENAME_FILEMATCHER = new FilenameFilter() {
+        private Set<String> STANDARD_BASE_NAMES = SetUtils.asSet( "com", "net", "org" );
+
+        @Override
+        public boolean accept( File dir, String name ) {
+            return name.length() == 2 || STANDARD_BASE_NAMES.contains(name);
+        }
+    };
 
     private File rootDir;
 
@@ -18,36 +31,22 @@ public class ProjectWorkspaceImpl implements ProjectWorkspace {
     }
 
     public File[] scanForSourceDirectories() {
-        return new File[] {getSourceDirectory()};
+        File sourceDirectory = getSourceDirectory();
+
+        return scanForRootSourceDirectories( sourceDirectory );
     }
 
     public File[] scanForTestDirectories() {
         File testDir = new File(rootDir,"tests");
 
-        if ( testDir.exists() ) {
-            return new File[] {testDir};
-        } else {
-            return new File[] {};
-        }
+        return scanForRootSourceDirectories( testDir );
     }
 
-    public String[] scanForMainClassFQNs() {
-        File f = scanForFile( "Main.java" );
-        if ( f == null ) {
-            return new String[] {};
-        }
-
-        File sourceDirectory = getSourceDirectory();
-
-        try {
-            String srcPath  = sourceDirectory.getCanonicalPath();
-            String mainPath = f.getCanonicalPath();
-
-            String relativeMainPath = mainPath.substring(srcPath.length()+1, mainPath.length()-5);
-
-            return new String[] {relativeMainPath.replaceAll( "/", "." )};
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+    private File[] scanForRootSourceDirectories( File dir ) {
+        if ( FileUtils.directoryContains( dir, BASEPACKAGENAME_FILEMATCHER ) ) {
+            return new File[] {dir};
+        } else {
+            return FileUtils.allChildDirectories( dir );
         }
     }
 
