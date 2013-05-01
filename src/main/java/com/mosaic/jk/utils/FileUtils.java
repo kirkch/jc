@@ -30,7 +30,7 @@ public class FileUtils {
 
     public static File[] allChildDirectories( File directory ) {
         File[] files = directory.listFiles( DIRECTORY_FILTER );
-        
+
         return files == null ? new File[0] : files;
     }
 

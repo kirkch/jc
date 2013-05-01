@@ -32,6 +32,11 @@ public class EnvironmentImpl implements Environment {
     }
 
     @Override
+    public void warn( String msg ) {
+        err.println( "WARN: " + msg );
+    }
+
+    @Override
     public void error( String msg ) {
         err.println( "ERROR: " + msg );
     }

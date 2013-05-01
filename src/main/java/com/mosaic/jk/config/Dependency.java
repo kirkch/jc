@@ -12,24 +12,39 @@ import static com.mosaic.jk.config.Dependency.DependencyScope.TEST;
  */
 public class Dependency {
 
-    public static Dependency test( String group, String artefact, String version ) {
-        Dependency d = new Dependency();
 
-        d.groupId       = "junit";
-        d.artefactName  = "junit";
-        d.versionNumber = "4.8.2";
-        d.scope         = TEST;
 
-        return d;
+    // [GLOBAL]
+    // group:artifact:version
+
+    // [localSrcName1 RUNTIME]
+    // localSrcName2
+    // group:artifact:version
+
+
+
+
+
+
+    public static Dependency test( String group, String artifact, String version ) {
+        return new Dependency( group, artifact, version, TEST );
     }
 
     public static enum DependencyScope {
         TEST, COMPILE, RUNTIME
     }
 
+    public Dependency() {}
+
+    public Dependency(String group, String artifact, String version, DependencyScope scope) {
+        this.groupId       = group;
+        this.artifactName  = artifact;
+        this.versionNumber = version;
+        this.scope         = scope;
+    }
 
     public String          groupId;
-    public String          artefactName;
+    public String          artifactName;
     public String          versionNumber;
 
     public String          packageNbl;

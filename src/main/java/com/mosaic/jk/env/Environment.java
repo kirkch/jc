@@ -8,6 +8,8 @@ public interface Environment {
 
     void appFinished();
 
-    public void info( String stage, String msg );
+    void info( String stage, String msg );
     void error( String msg );
+
+    void warn( String msg );
 }

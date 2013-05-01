@@ -73,7 +73,7 @@ public class ConfigLoaderTests_defaultCases {
     public void expectSingleJar() {
         ModuleConfig module = config.modules.get(0);
 
-        assertEquals( "JAR", module.packageAs );
+        assertEquals( "JAR", module.packageType );
     }
 
     @Test
@@ -81,7 +81,7 @@ public class ConfigLoaderTests_defaultCases {
         ModuleConfig module = config.modules.get(0);
 
         Dependency junit   = Dependency.test("junit","junit","4.8.2");
-        Dependency mockito = Dependency.test("org.mockito","mockito-all","1.9.5");
+        Dependency mockito = Dependency.test( "org.mockito", "mockito-all", "1.9.5" );
 
 
         assertEquals( Arrays.asList(junit,mockito), module.dependencies );

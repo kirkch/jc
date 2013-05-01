@@ -79,7 +79,7 @@ public class ConfigLoaderTests_multipleSources {
     public void expectSingleJar() {
         ModuleConfig module = config.modules.get(0);
 
-        assertEquals( "JAR", module.packageAs );
+        assertEquals( "JAR", module.packageType );
     }
 
     @Test

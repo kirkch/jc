@@ -92,7 +92,7 @@ public class ConfigLoader {
         module.sourceDirectories = fetchDefaultSourceDirectories( project );
         module.testDirectories   = fetchDefaultTestDirectories( project );
         module.mainFQNs          = fetchDefaultMainFQN( module.sourceDirectories );
-        module.packageAs         = "JAR";
+        module.packageType = "JAR";
         module.dependencies      = fetchDefaultDependencies();
         modules.add( module );
 

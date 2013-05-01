@@ -14,7 +14,10 @@ public class ModuleConfig {
     public File[]   sourceDirectories;
     public File[]   testDirectories;
 
-    public String packageAs;
+    /**
+     * Package as in: JAR, WAR etc
+     */
+    public String packageType;
 
 
     public List<Dependency> dependencies;

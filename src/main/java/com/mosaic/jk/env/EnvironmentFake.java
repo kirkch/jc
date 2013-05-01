@@ -27,6 +27,10 @@ public class EnvironmentFake implements Environment {
         recordedEvents.add( new Event("ERROR: "+ msg) );
     }
 
+    public void warn( String msg ) {
+        recordedEvents.add( new Event("WARN: "+ msg) );
+    }
+
     public static class Event {
         public final String desc;
 

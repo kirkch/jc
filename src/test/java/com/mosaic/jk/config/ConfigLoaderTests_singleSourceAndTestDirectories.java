@@ -74,7 +74,7 @@ public class ConfigLoaderTests_singleSourceAndTestDirectories {
     public void expectSingleJar() {
         ModuleConfig module = config.modules.get(0);
 
-        assertEquals( "JAR", module.packageAs );
+        assertEquals( "JAR", module.packageType );
     }
 
     @Test
