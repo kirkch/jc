@@ -12,20 +12,6 @@ import static com.mosaic.jk.config.Dependency.DependencyScope.TEST;
  */
 public class Dependency {
 
-
-
-    // [GLOBAL]
-    // group:artifact:version
-
-    // [localSrcName1 RUNTIME]
-    // localSrcName2
-    // group:artifact:version
-
-
-
-
-
-
     public static Dependency test( String group, String artifact, String version ) {
         return new Dependency( group, artifact, version, TEST );
     }

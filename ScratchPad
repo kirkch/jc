@@ -1,0 +1,44 @@
+
+
+
+// compile
+// unit tests  -- faster after packaged?
+// package
+// inmemory package tests    faked boundary tests      meat tests
+
+
+    // atests   btests
+
+
+
+    // unit tests - smoke tests
+    // (a/b)          ()
+    //               does the system do what it should (functional)
+    //               is it up
+    //               is it installed correctly
+    //               does it perform
+    //               does it scale
+    //               is it localised
+
+
+//    artifacts  (default all modules into one)
+//    [JAR]  // default      JAR   FATJAR     WAR EAR
+//    moduleName1
+//    moduleName2         will package all of its dependencies into one place
+
+
+
+    // [GLOBAL]
+    // group:artifact:version
+
+    // [localSrcName1 RUNTIME]
+    // localSrcName2
+    // group:artifact:version
+
+    // [localSrcName1]
+
+
+
+    //// localSrcName2:package
+
+    //// [localSrcName1:package RUNTIME]
