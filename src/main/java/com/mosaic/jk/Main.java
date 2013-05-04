@@ -21,7 +21,7 @@ public class Main {
         File rootDirectory = getRootDirectoryFromArgs( args );
 
         Main main = new Main(env);
-        main.setRootDirectory( rootDirectory );
+        main.setRootDirectory( rootDirectory.getCanonicalFile() );
 
         if ( main.validateConfig() ) {
             POMWriter out = new POMWriter( env, new FileWriter(new File(rootDirectory,"pom.xml")) );

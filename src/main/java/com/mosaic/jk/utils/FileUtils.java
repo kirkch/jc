@@ -54,7 +54,7 @@ public class FileUtils {
             String srcPath  = parent.getCanonicalPath();
             String mainPath = absolutePath.getCanonicalPath();
 
-            return mainPath.substring(srcPath.length()+1, mainPath.length()-5);
+            return mainPath.substring(srcPath.length()+1, mainPath.length());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

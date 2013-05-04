@@ -1,15 +1,19 @@
 package com.mosaic.jk.maven;
 
 import com.mosaic.jk.config.Config;
+import com.mosaic.jk.config.Dependency;
 import com.mosaic.jk.config.ModuleConfig;
 import com.mosaic.jk.env.Environment;
 import com.mosaic.jk.io.XMLWriter;
+import com.mosaic.jk.utils.FileUtils;
 
 import java.io.File;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  *
@@ -34,16 +38,15 @@ public class POMWriter {
 
         startPOM( config.groupId, mavenArtifactName, mavenVersionNumber );
 
-        startPluginsBlock();
+        startPluginsBlock( config );
         printSureFireTestPlugin();
         printManifestPlugin( config );
-        printMavenBuilderHelperPlugin( config );
+//        printMavenBuilderHelperPlugin( config );
         endPluginsBlock();
+        printDependencies( config );
 
         endPOM();
     }
-
-
 
     private void startPOM( String groupId, String artifactId, String version ) {
         out.println( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" );
@@ -57,14 +60,52 @@ public class POMWriter {
         out.println();
         out.printTagWithTextBody( "packaging", "jar" );
         out.println();
+
     }
+
+
+    private void printResourceDirectories( Config config ) {
+        out.printStartTag( "resources" );
+        for ( ModuleConfig module : config.modules ) {
+            for ( File f : module.sourceDirectories ) {
+                out.printStartTag( "resource" );
+                out.printOnelineTag( "directory", FileUtils.toRelativePath(config.rootDirectory,f) );
+                out.printEndTag( "resource" );
+            }
+        }
+
+        out.printEndTag( "resources" );
+
+        out.printStartTag( "testResources" );
+        for ( ModuleConfig module : config.modules ) {
+            for ( File f : module.testDirectories ) {
+                out.printStartTag( "testResource" );
+                out.printOnelineTag( "directory", FileUtils.toRelativePath(config.rootDirectory,f) );
+                out.printEndTag( "testResource" );
+            }
+        }
+
+        out.printEndTag( "testResources" );
+    }
+
+//        <resources>
+//        <resource>
+//        <directory>...</directory> will be added as Source folder
+//            </resource>
+//        </resources>
+//
+//        <testResources>
+//        <testResource>
+//        <directory>...</directory> will be added as Test Source folder
+//        </testResource>
+//        </testResources>
+
 
     private void endPOM() {
         out.println( "</project>" );
         out.flush();
         out.close();
     }
-
 
 //    <plugin>
 //    <groupId>org.apache.maven.plugins</groupId>
@@ -107,76 +148,76 @@ public class POMWriter {
 //    </execution>
 //    </executions>
 //    </plugin>
-    private void printMavenBuilderHelperPlugin( Config config ) {  // declares source locations to maven and ide's
-        out.printStartTag( "plugin" );
+//    private void printMavenBuilderHelperPlugin( Config config ) {  // declares source locations to maven and ide's
+//        out.printStartTag( "plugin" );
+//
+//        out.printOnelineTag( "groupId", "org.codehaus.mojo" );
+//        out.printOnelineTag( "artifactId", "build-helper-maven-plugin" );
+////        out.printOnelineTag( "version", "2.14.1" );
+//
+//
+//        out.printStartTags( "executions" );
+//
+//        {
+//            out.printStartTags( "execution" );
+//            out.printOnelineTag( "id", "generate-sources" );
+//            out.printOnelineTag( "phase", "generate-sources" );
+//            out.printStartTags( "goals" );
+//            out.printOnelineTag( "goal", "add-source" );
+//            out.printEndTags( "goals" );
+//
+//            out.printStartTags( "configuration", "sources" );
+//
+//            for ( ModuleConfig module : config.modules ) {
+//                for ( File dir : module.sourceDirectories ) {
+//                    out.printOnelineTag( "source", dir.getAbsolutePath() );
+//                }
+//            }
+//
+//            out.printEndTags( "sources", "configuration" );
+//            out.printEndTags( "execution");
+//        }
+//
+//
+//        {
+//            out.printStartTags( "execution" );
+//            out.printOnelineTag( "id", "generate-test-sources" );
+//            out.printOnelineTag( "phase", "generate-test-sources" );
+//            out.printStartTags( "goals" );
+//            out.printOnelineTag( "goal", "add-test-source" );
+//            out.printEndTags( "goals" );
+//
+//            out.printStartTags( "configuration", "sources" );
+//
+//            for ( ModuleConfig module : config.modules ) {
+//                for ( File dir : module.testDirectories ) {
+//                    out.printOnelineTag( "source", dir.getAbsolutePath() );
+//                }
+//            }
+//
+//            out.printEndTags( "sources", "configuration" );
+//            out.printEndTags( "execution");
+//        }
+//
+//        out.printEndTags( "executions" );
+//
+//        out.printEndTag( "plugin" );
+//    }
 
-        out.printOnelineTag( "groupId", "org.codehaus.mojo" );
-        out.printOnelineTag( "artifactId", "build-helper-maven-plugin" );
-//        out.printOnelineTag( "version", "2.14.1" );
 
-
-        out.printStartTags( "executions" );
-
-        {
-            out.printStartTags( "execution" );
-            out.printOnelineTag( "id", "generate-sources" );
-            out.printOnelineTag( "phase", "generate-sources" );
-            out.printStartTags( "goals" );
-            out.printOnelineTag( "goal", "add-source" );
-            out.printEndTags( "goals" );
-
-            out.printStartTags( "configuration", "sources" );
-
-            for ( ModuleConfig module : config.modules ) {
-                for ( File dir : module.sourceDirectories ) {
-                    out.printOnelineTag( "source", dir.getAbsolutePath() );
-                }
-            }
-
-            out.printEndTags( "sources", "configuration" );
-            out.printEndTags( "execution");
-        }
-
-
-        {
-            out.printStartTags( "execution" );
-            out.printOnelineTag( "id", "generate-test-sources" );
-            out.printOnelineTag( "phase", "generate-test-sources" );
-            out.printStartTags( "goals" );
-            out.printOnelineTag( "goal", "add-test-source" );
-            out.printEndTags( "goals" );
-
-            out.printStartTags( "configuration", "sources" );
-
-            for ( ModuleConfig module : config.modules ) {
-                for ( File dir : module.testDirectories ) {
-                    out.printOnelineTag( "source", dir.getAbsolutePath() );
-                }
-            }
-
-            out.printEndTags( "sources", "configuration" );
-            out.printEndTags( "execution");
-        }
-
-        out.printEndTags( "executions" );
-
-        out.printEndTag( "plugin" );
-    }
-
-
-    private void startPluginsBlock() {
+    private void startPluginsBlock( Config config) {
         out.printStartTag("build" );
 
         out.printOnelineTag( "sourceDirectory", "src" );
+        printResourceDirectories( config );
 
         out.printStartTags("plugins");
     }
 
+
     private void endPluginsBlock() {
         out.printEndTags( "plugins", "build" );
     }
-
-
 
     private void printManifestPlugin( Config config ) {
         out.printStartTags("plugin");
@@ -229,6 +270,33 @@ public class POMWriter {
         out.printEndTags("execution", "executions");
 
         out.printEndTags( "plugin" );
+    }
+
+
+
+    private void printDependencies( Config config ) {
+        out.printStartTag( "dependencies" );
+
+        Set<Dependency> dependenciesSoFar = new HashSet<Dependency>();
+        for ( ModuleConfig module : config.modules ) {
+            for ( Dependency d : module.dependencies ) {
+                if ( !dependenciesSoFar.contains(d) ) {
+                    printDependency(d);
+
+                    dependenciesSoFar.add(d);
+                }
+            }
+        }
+
+        out.printEndTag( "dependencies" );
+    }
+
+    private void printDependency( Dependency d ) {
+        out.printStartTag( "dependency" );
+        out.printOnelineTag( "groupId", d.groupId );
+        out.printOnelineTag( "artifactId", d.artifactName );
+        out.printOnelineTag( "version", d.versionNumber );
+        out.printEndTag( "dependency" );
     }
 
 

@@ -30,6 +30,7 @@ public class ConfigLoader {
         config.modules       = loadModuleInformation( project );
         config.groupId       = inferDefaultGroupId( config.modules );
 
+        config.rootDirectory = projectDirectory;
 
         try {
             loadDependenciesIntoModuleObjects( config.projectName, config.versionNumber, config.modules, project );
@@ -165,6 +166,8 @@ public class ConfigLoader {
                 public void invoke( File f ) {
                     if ( f.isFile() && f.getName().endsWith( "Main.java" ) ) {
                         String relativePath = FileUtils.toRelativePath( sourceDirectory, f );
+
+                        relativePath = relativePath.substring( 0, relativePath.length()-5 ); // strip off .java
 
                         mainClasses.add( relativePath.replaceAll( "/", "." ) );
                     }
