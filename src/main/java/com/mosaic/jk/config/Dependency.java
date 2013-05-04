@@ -5,38 +5,28 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-import static com.mosaic.jk.config.Dependency.DependencyScope.TEST;
-
 /**
  *
  */
 public class Dependency {
 
-    public static Dependency test( String group, String artifact, String version ) {
-        return new Dependency( group, artifact, version, TEST );
-    }
-
-    public static enum DependencyScope {
-        TEST, COMPILE, RUNTIME
-    }
-
     public Dependency() {}
 
-    public Dependency(String group, String artifact, String version, DependencyScope scope) {
+    public Dependency( String group, String artifact, String version ) {
+        this( group, artifact, version, null );
+    }
+
+    public Dependency( String group, String artifact, String version, String packageNbl ) {
         this.groupId       = group;
         this.artifactName  = artifact;
         this.versionNumber = version;
-        this.scope         = scope;
+        this.packageNbl    = packageNbl;
     }
 
-    public String          groupId;
-    public String          artifactName;
-    public String          versionNumber;
-
-    public String          packageNbl;
-
-    public DependencyScope scope;
-
+    public String groupId;
+    public String artifactName;
+    public String versionNumber;
+    public String packageNbl;
 
 
     public int hashCode() {

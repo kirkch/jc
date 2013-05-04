@@ -80,8 +80,8 @@ public class ConfigLoaderTests_defaultCases {
     public void expectDefaultTestDependenciesOnly() {
         ModuleConfig module = config.modules.get(0);
 
-        Dependency junit   = Dependency.test("junit","junit","4.8.2");
-        Dependency mockito = Dependency.test( "org.mockito", "mockito-all", "1.9.5" );
+        Dependency junit   = new Dependency( "junit", "junit", "4.8.2" );
+        Dependency mockito = new Dependency( "org.mockito", "mockito-all", "1.9.5" );
 
 
         assertEquals( Arrays.asList(junit,mockito), module.dependencies );

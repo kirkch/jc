@@ -1,5 +1,6 @@
 package com.mosaic.jk.config;
 
+import com.mosaic.jk.io.IniFileDelegate;
 import com.mosaic.jk.io.ProjectWorkspace;
 import com.mosaic.jk.io.ProjectWorkspaceImpl;
 import com.mosaic.jk.utils.FileUtils;
@@ -8,6 +9,7 @@ import com.mosaic.jk.utils.StringUtils;
 import com.mosaic.jk.utils.VoidFunction1;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -19,16 +21,21 @@ import java.util.List;
 public class ConfigLoader {
 
     public Config loadConfigFor( File projectDirectory ) {
-        ProjectWorkspace fs = new ProjectWorkspaceImpl( projectDirectory );
+        ProjectWorkspace project = new ProjectWorkspaceImpl( projectDirectory );
 
         Config config = new Config();
 
         config.projectName   = fetchDefaultProjectName( projectDirectory );
         config.versionNumber = fetchDefaultVersionNumber();
-
-        config.modules       = fetchDefaultModules( fs );
-
+        config.modules       = loadModuleInformation( project );
         config.groupId       = inferDefaultGroupId( config.modules );
+
+
+        try {
+            loadDependenciesIntoModuleObjects( config.projectName, config.versionNumber, config.modules, project );
+        } catch ( IOException e ) {
+            throw new RuntimeException(e);
+        }
 
 
         return config;
@@ -84,7 +91,7 @@ public class ConfigLoader {
         return selectedChild1.getName() + "." + selectedChild2.getName();
     }
 
-    private List<ModuleConfig> fetchDefaultModules( ProjectWorkspace project ) {
+    private List<ModuleConfig> loadModuleInformation( ProjectWorkspace project ) {
         List<ModuleConfig> modules = new ArrayList<ModuleConfig>();
 
         ModuleConfig module = new ModuleConfig();
@@ -93,15 +100,50 @@ public class ConfigLoader {
         module.testDirectories   = fetchDefaultTestDirectories( project );
         module.mainFQNs          = fetchDefaultMainFQN( module.sourceDirectories );
         module.packageType = "JAR";
-        module.dependencies      = fetchDefaultDependencies();
+
         modules.add( module );
 
         return modules;
     }
 
+    private void loadDependenciesIntoModuleObjects( final String projectName, final String versionNumber, final List<ModuleConfig> modules, ProjectWorkspace project ) throws IOException {
+        if ( !project.hasDependenciesFile() ) {
+            List<Dependency> defaultDependencies = fetchDefaultDependencies();
+
+            for ( ModuleConfig module : modules ) {
+                module.dependencies = defaultDependencies;
+            }
+
+            return;
+        }
+
+        final DependencyParser dependencyParser = new DependencyParser( projectName, versionNumber );
+        project.loadIniFile( "dependencies", new IniFileDelegate() {
+            public void parsingStarted() {}
+            public void parsingFinished() {}
+
+
+            public void labelRead( String label ) {
+            }
+
+            public void lineRead( String line ) {
+                Dependency dependency = dependencyParser.parseDependency( line );
+
+                for ( ModuleConfig module : modules ) {
+                    module.dependencies.add( dependency );
+                }
+            }
+        } );
+
+
+
+     // todo assign defaults
+//        return fetchDefaultDependencies();
+    }
+
     private List<Dependency> fetchDefaultDependencies() {
-        Dependency junit   = Dependency.test("junit","junit","4.8.2");
-        Dependency mockito = Dependency.test("org.mockito","mockito-all","1.9.5");
+        Dependency junit   = new Dependency( "junit", "junit", "4.8.2" );
+        Dependency mockito = new Dependency( "org.mockito", "mockito-all", "1.9.5" );
 
         return Arrays.asList(junit,mockito);
     }

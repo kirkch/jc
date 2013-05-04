@@ -4,7 +4,10 @@ import com.mosaic.jk.utils.FileUtils;
 import com.mosaic.jk.utils.SetUtils;
 
 import java.io.File;
+import java.io.FileReader;
 import java.io.FilenameFilter;
+import java.io.IOException;
+import java.io.Reader;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -25,9 +28,11 @@ public class ProjectWorkspaceImpl implements ProjectWorkspace {
     };
 
     private File rootDir;
+    private File dependenciesFile;
 
     public ProjectWorkspaceImpl( File rootDir ) {
-        this.rootDir = rootDir;
+        this.rootDir          = rootDir;
+        this.dependenciesFile = new File(rootDir,"project/dependencies");
     }
 
     public File[] scanForSourceDirectories() {
@@ -41,6 +46,25 @@ public class ProjectWorkspaceImpl implements ProjectWorkspace {
 
         return scanForRootSourceDirectories( testDir );
     }
+
+    public boolean hasDependenciesFile() {
+        return dependenciesFile.exists();
+    }
+
+    public void loadIniFile( String dependencies, IniFileDelegate iniFileDelegate ) throws IOException {
+        IniFileParser parser = new IniFileParser();
+        Reader        in     = new FileReader(dependenciesFile);
+
+        try {
+            parser.read( in, iniFileDelegate );
+        } finally {
+            in.close();
+        }
+    }
+
+
+
+
 
     private File[] scanForRootSourceDirectories( File dir ) {
         if ( FileUtils.directoryContains( dir, BASEPACKAGENAME_FILEMATCHER ) ) {

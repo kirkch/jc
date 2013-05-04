@@ -27,18 +27,63 @@
 //    moduleName2         will package all of its dependencies into one place
 
 
+/project/terminology
 
-    // [GLOBAL]
-    // group:artifact:version
+links to wikipedia, katas, benchmarks, examples
 
-    // [localSrcName1 RUNTIME]
-    // localSrcName2
-    // group:artifact:version
+[tests]
+unit -> unit test(s)
+    Very short, very fast inmemory tests that each check a single part of the api. In mass they provide confidence that
+    functions within the code base meet their requirements. A Unit Test is best written at the point of reuse of a class
+    and/or at the point of non-trivial logic. Unit tests must setup and tear down their own environment with no dependencies,
+    with the acid test being that each unit test could be run in parallel and in any order with no side effects between each other.
+micro -> microbenchmark(s)
+    Measures the duration of repeatedly running the same block of code over and over again. Used to compare different
+    implementation approaches. The ideal microbenchmark warms the JVM first, does not result in GC during the test
+    and provides consistent results between test runs.
+acc -> acceptance tests | isolated system tests
+smoke -> smoke tests
+load -> load tests
 
-    // [localSrcName1]
+[java]
+JVM ->
+GC ->
+warms the JVM ->
 
+unit tests
+isolated system tests/itests/inttests
+acctests
+
+tests/client/1_unit
+            /2_micro
+            /3_int
+            /4_acc
+            /5_smoke
+            /6_load
+
+
+
+[GLOBAL]
+group:artifact:version
+
+
+[tests/client/micro]
+     group:artifact:version                   // as include
+     group:artifact:version  <exclude>
+     group:artifact:version  <runtimeonly>
+     group:artifact:version  <compiletimeonly>
 
 
     //// localSrcName2:package
 
     //// [localSrcName1:package RUNTIME]
+
+
+
+
+other ideas
+---------
+
+project/acronyms    - defines common acronums and checks/communicates them within the ide
+
+

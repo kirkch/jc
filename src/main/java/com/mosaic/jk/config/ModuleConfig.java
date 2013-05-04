@@ -1,6 +1,7 @@
 package com.mosaic.jk.config;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,7 +21,7 @@ public class ModuleConfig {
     public String packageType;
 
 
-    public List<Dependency> dependencies;
+    public List<Dependency> dependencies = new ArrayList<Dependency>();
 
 
 }
