@@ -36,6 +36,11 @@ public class ConfigLoaderTests_defaultCases {
     }
 
     @Test
+    public void expectDestinationDirectory() {
+        assertEquals( new File(config.rootDirectory, "target/classes"), config.destinationDirectory );
+    }
+
+    @Test
     public void expectOnlyOneModule() {
         assertEquals( 1, config.modules.size() );
     }

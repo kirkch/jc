@@ -13,14 +13,15 @@ public class Dependency {
     public Dependency() {}
 
     public Dependency( String group, String artifact, String version ) {
-        this( group, artifact, version, null );
+        this( group, artifact, version, null, false );
     }
 
-    public Dependency( String group, String artifact, String version, String packageNbl ) {
-        this.groupId       = group;
-        this.artifactName  = artifact;
-        this.versionNumber = version;
-        this.packageNbl    = packageNbl;
+    public Dependency( String group, String artifact, String version, String packageNbl, boolean projectModuleFlag ) {
+        this.groupId           = group;
+        this.artifactName      = artifact;
+        this.versionNumber     = version;
+        this.packageNbl        = packageNbl;
+        this.projectModuleFlag = projectModuleFlag;
     }
 
     public String groupId;
@@ -28,6 +29,14 @@ public class Dependency {
     public String versionNumber;
     public String packageNbl;
 
+    /**
+     * Is this dependency pointing at a module within this build. False means that the dependency is external.
+     */
+    public boolean projectModuleFlag;
+
+    public boolean isExternal() {
+        return !projectModuleFlag;
+    }
 
     public int hashCode() {
         return HashCodeBuilder.reflectionHashCode( this );

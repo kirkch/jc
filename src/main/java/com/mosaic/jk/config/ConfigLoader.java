@@ -25,12 +25,13 @@ public class ConfigLoader {
 
         Config config = new Config();
 
-        config.projectName   = fetchDefaultProjectName( projectDirectory );
-        config.versionNumber = fetchDefaultVersionNumber();
-        config.modules       = loadModuleInformation( project );
-        config.groupId       = inferDefaultGroupId( config.modules );
+        config.projectName          = fetchDefaultProjectName( projectDirectory );
+        config.versionNumber        = fetchDefaultVersionNumber();
+        config.modules              = loadModuleInformation( project );
+        config.groupId              = inferDefaultGroupId( config.modules );
 
-        config.rootDirectory = projectDirectory;
+        config.rootDirectory        = projectDirectory;
+        config.destinationDirectory = new File( projectDirectory, "target/classes" );
 
         try {
             loadDependenciesIntoModuleObjects( config.projectName, config.versionNumber, config.modules, project );

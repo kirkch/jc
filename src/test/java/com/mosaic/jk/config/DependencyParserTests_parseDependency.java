@@ -29,14 +29,20 @@ public class DependencyParserTests_parseDependency {
     public void givenASingleWord_expectDependencyWithDefaultGroupAndVersionNumber() {
         Dependency d = parser.parseDependency( "fooBar" );
 
-        assertEquals( new Dependency("com.maverik", "fooBar", "1.0"), d );
+        Dependency fooBar = new Dependency("com.maverik", "fooBar", "1.0");
+        fooBar.projectModuleFlag = true;
+
+        assertEquals(fooBar, d );
     }
 
     @Test
     public void givenASingleWord_expectDependencyWithSuppliedScope() {
         Dependency d = parser.parseDependency( "fooBar" );
 
-        assertEquals( new Dependency("com.maverik", "fooBar", "1.0" ), d );
+        Dependency fooBar = new Dependency("com.maverik", "fooBar", "1.0");
+        fooBar.projectModuleFlag = true;
+
+        assertEquals(fooBar, d );
     }
 
     @Test
@@ -50,7 +56,7 @@ public class DependencyParserTests_parseDependency {
     public void givenPackageInfo_expectDepencyWithPackage() {
         Dependency d = parser.parseDependency( "org.junit:junit:1.1:org.junit.proto" );
 
-        assertEquals( new Dependency("org.junit", "junit", "1.1", "org.junit.proto"), d );
+        assertEquals( new Dependency("org.junit", "junit", "1.1", "org.junit.proto", false), d );
     }
 
 }

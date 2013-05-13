@@ -1,5 +1,6 @@
 package com.mosaic.jk;
 
+import com.mosaic.jk.compilers.java.JavaCompiler;
 import com.mosaic.jk.config.Config;
 import com.mosaic.jk.config.ConfigLoader;
 import com.mosaic.jk.env.Environment;
@@ -20,13 +21,29 @@ public class Main {
         Environment env = new EnvironmentImpl();
         File rootDirectory = getRootDirectoryFromArgs( args );
 
-        Main main = new Main(env);
+
+        Main   main   = new Main(env);
         main.setRootDirectory( rootDirectory.getCanonicalFile() );
 
         if ( main.validateConfig() ) {
+
+
             POMWriter out = new POMWriter( env, new FileWriter(new File(rootDirectory,"pom.xml")) );
             main.generateMavenPOM( out );
+
+            main.compile();
         }
+
+    }
+
+    private void compile() {
+        JavaCompiler compiler = new JavaCompiler();
+
+        compiler.compile(config);
+    }
+
+    private static Config loadConfig( File rootDirectory ) {
+        return new ConfigLoader().loadConfigFor( rootDirectory );
     }
 
     private static File getRootDirectoryFromArgs( String[] args ) {
@@ -39,15 +56,18 @@ public class Main {
 
 
 
-    private File rootDirectory;
+    private File        rootDirectory;
     private Environment env;
+    private Config      config;
 
-    public Main( Environment env ) {
+    public Main(Environment env) {
         this.env = env;
     }
 
     public void setRootDirectory( File rootDirectory ) {
         this.rootDirectory = rootDirectory;
+
+        this.config = loadConfig(rootDirectory);
     }
 
     public boolean validateConfig() {
@@ -67,16 +87,10 @@ public class Main {
                 return;
             }
 
-            Config config = loadConfig();
-
             out.writeToPOM( config );
         } finally {
             env.appFinished();
         }
-    }
-
-    private Config loadConfig() {
-        return new ConfigLoader().loadConfigFor( rootDirectory );
     }
 
 }

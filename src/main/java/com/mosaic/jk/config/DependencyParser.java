@@ -24,9 +24,9 @@ public class DependencyParser {
         String[] components = encodedDependency.split( ":" );
 
         switch ( components.length ) {
-            case 1: return new Dependency(projectGroup, encodedDependency, progectVersion, null);
-            case 3: return new Dependency(components[0], components[1], components[2], null);
-            case 4: return new Dependency(components[0], components[1], components[2], components[3]);
+            case 1: return new Dependency(projectGroup, encodedDependency, progectVersion, null, true);
+            case 3: return new Dependency(components[0], components[1], components[2], null, false);
+            case 4: return new Dependency(components[0], components[1], components[2], components[3], false);
             default: return null;
         }
     }

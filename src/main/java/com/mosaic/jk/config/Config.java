@@ -14,6 +14,8 @@ public class Config {
 
 
     public File rootDirectory;
+    public File destinationDirectory;
 
     public List<ModuleConfig> modules;
+
 }
