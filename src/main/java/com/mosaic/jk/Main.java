@@ -18,6 +18,8 @@ import java.io.IOException;
 public class Main {
 
     public static void main( String[] args ) throws IOException {
+        long startMillis = System.currentTimeMillis();
+
         Environment env = new EnvironmentImpl();
         File rootDirectory = getRootDirectoryFromArgs( args );
 
@@ -26,14 +28,14 @@ public class Main {
         main.setRootDirectory( rootDirectory.getCanonicalFile() );
 
         if ( main.validateConfig() ) {
-
-
             POMWriter out = new POMWriter( env, new FileWriter(new File(rootDirectory,"pom.xml")) );
             main.generateMavenPOM( out );
 
             main.compile();
         }
 
+        long durationMillis = System.currentTimeMillis() - startMillis;
+        System.out.println( String.format("Total duration %.2fs", durationMillis/1000.0) );
     }
 
     private void compile() {
