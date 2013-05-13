@@ -27,7 +27,7 @@ public class ConfigLoaderTests_singleGlobalDependency {
 
         assertEquals( null, module.moduleNameNbl );
 
-        assertEquals( Arrays.asList(new Dependency("commons-lang", "commons-lang", "2.6")), module.dependencies );
+        assertEquals( Arrays.asList(new Dependency("org.apache.commons", "commons-lang3", "3.0.1")), module.dependencies );
     }
 
 }

@@ -3,6 +3,7 @@ package com.mosaic.jk.compilers.java;
 import com.mosaic.jk.config.Config;
 import com.mosaic.jk.config.Dependency;
 import com.mosaic.jk.config.ModuleConfig;
+import com.mosaic.jk.env.Environment;
 
 import javax.tools.*;
 import java.io.*;
@@ -15,7 +16,7 @@ import java.util.*;
  */
 public class JavaCompiler {
 
-    public void compile( Config config ) {
+    public void compile( Environment env, Config config ) {
         List<File>      sourceDirectories = new ArrayList<File>();
         Set<Dependency> dependencies      = new HashSet<Dependency>();
 
@@ -26,9 +27,39 @@ public class JavaCompiler {
         }
 
         compile( sourceDirectories, config.destinationDirectory, dependencies );
+
+        generateManifest( env, config );
     }
 
-    public void compile( List<File> sourceDirectories, File destinationDirectory, Set<Dependency> dependencies ) {
+    private void generateManifest( Environment env, Config config ) {
+        File metaDirectory = new File( config.destinationDirectory, "META-INF" );
+        File manifestFile  = new File( metaDirectory, "MANIFEST" );
+
+        metaDirectory.mkdirs();
+
+        List<String> mainClasses = config.allMainFQNs();
+        try {
+            PrintWriter out = new PrintWriter( manifestFile );
+
+            try {
+                int numMains = mainClasses.size();
+                if ( numMains > 0 ) {
+                    String fqn = mainClasses.get( 0 );
+                    if ( numMains > 1 ) {
+                        env.warn( "Found " + numMains + " classes with Main in the name. We picked the first one to place into the POM: " + fqn);
+                    }
+
+//                    out.printOnelineTag( "mainClass", fqn );
+                }
+            } finally {
+                out.close();
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void compile( List<File> sourceDirectories, File destinationDirectory, Set<Dependency> dependencies ) {
         destinationDirectory.mkdirs();
 
         javax.tools.JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
@@ -65,6 +96,7 @@ public class JavaCompiler {
                 }
 
                 String dependencyLocation = locateDependency( dependency );
+
                 buf.append( dependencyLocation );
             }
 
@@ -96,6 +128,14 @@ public class JavaCompiler {
     }
 
     private String locateDependency( Dependency dependency ) {
+        boolean useIvy = true;
+        if ( useIvy ) {
+            IvyArtifactResolver r = new IvyArtifactResolver();
+
+            return r.resolveArtifact(dependency).getPath();
+        }
+
+
         assert dependency.isExternal();
 
         String directorySeparator       = System.getProperty("file.separator");

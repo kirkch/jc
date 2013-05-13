@@ -1,6 +1,8 @@
 package com.mosaic.jk.config;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -18,4 +20,15 @@ public class Config {
 
     public List<ModuleConfig> modules;
 
+
+
+    public List<String> allMainFQNs() {
+        List<String> fqns = new ArrayList<String>();
+
+        for ( ModuleConfig module : modules ) {
+            Collections.addAll(fqns, module.mainFQNs);
+        }
+
+        return fqns;
+    }
 }

@@ -238,7 +238,7 @@ public class POMWriter {
                 out.printStartTag("archive");
                 out.printStartTag("manifest");
 
-                List<String> mainClasses = allMainFQNs(config);
+                List<String> mainClasses = config.allMainFQNs();
                 int numMains = mainClasses.size();
                 if ( numMains > 0 ) {
                     String fqn = mainClasses.get( 0 );
@@ -298,18 +298,5 @@ public class POMWriter {
         out.printOnelineTag( "version", d.versionNumber );
         out.printEndTag( "dependency" );
     }
-
-
-    private List<String> allMainFQNs( Config config ) {
-        List<String> fqns = new ArrayList<String>();
-
-        for ( ModuleConfig module : config.modules ) {
-            Collections.addAll( fqns, module.mainFQNs );
-        }
-
-        return fqns;
-    }
-
-
 
 }

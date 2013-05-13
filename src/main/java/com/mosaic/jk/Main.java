@@ -39,7 +39,7 @@ public class Main {
     private void compile() {
         JavaCompiler compiler = new JavaCompiler();
 
-        compiler.compile(config);
+        compiler.compile(env, config);
     }
 
     private static Config loadConfig( File rootDirectory ) {
