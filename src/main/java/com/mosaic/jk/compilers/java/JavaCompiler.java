@@ -4,6 +4,7 @@ import com.mosaic.jk.config.Config;
 import com.mosaic.jk.config.Dependency;
 import com.mosaic.jk.config.ModuleConfig;
 import com.mosaic.jk.env.Environment;
+import com.mosaic.jk.utils.ListUtils;
 
 import javax.tools.*;
 import java.io.*;
@@ -26,14 +27,32 @@ public class JavaCompiler {
             dependencies.addAll( module.dependencies );
         }
 
-        compile( sourceDirectories, config.destinationDirectory, dependencies );
+        List<String> resolvedExternalDependencies = resolveDependencies( dependencies );
+        compile( sourceDirectories, config.destinationDirectory, resolvedExternalDependencies );
 
-        generateManifest( env, config );
+        generateManifest( env, config, resolvedExternalDependencies );
     }
 
-    private void generateManifest( Environment env, Config config ) {
+    private List<String> resolveDependencies( Set<Dependency> dependencies ) {
+        List<String> resolvedDependencies = new ArrayList<String>( dependencies.size() );
+
+        for ( Dependency dependency : dependencies ) {
+            if ( dependency.projectModuleFlag ) {
+                continue;
+            }
+
+
+            String dependencyLocation = locateDependency( dependency );
+
+            resolvedDependencies.add(dependencyLocation);
+        }
+
+        return resolvedDependencies;
+    }
+
+    private void generateManifest(Environment env, Config config, List<String> dependencies) {
         File metaDirectory = new File( config.destinationDirectory, "META-INF" );
-        File manifestFile  = new File( metaDirectory, "MANIFEST" );
+        File manifestFile  = new File( metaDirectory, "MANIFEST.MF" );
 
         metaDirectory.mkdirs();
 
@@ -49,6 +68,15 @@ public class JavaCompiler {
                         env.warn( "Found " + numMains + " classes with Main in the name. We picked the first one to place into the POM: " + fqn);
                     }
 
+                    String dependencyPath = ListUtils.concat( dependencies, " " );
+
+                    out.println( "Manifest-Version: 1.0" );
+                    out.println( "Build-Version: JC 0.0.1" );
+                    out.println( String.format("Created-By: %s (%s)", System.getProperty("java.runtime.version"), System.getProperty("java.vm.vendor")) );
+                    out.println( "Main-Class: " + fqn );
+//                    out.println( "Class-Path: lib/lib1.jar lib/lib2.jar" );
+                    out.println( "Class-Path: "+dependencyPath  );
+
 //                    out.printOnelineTag( "mainClass", fqn );
                 }
             } finally {
@@ -59,7 +87,7 @@ public class JavaCompiler {
         }
     }
 
-    private void compile( List<File> sourceDirectories, File destinationDirectory, Set<Dependency> dependencies ) {
+    private void compile( List<File> sourceDirectories, File destinationDirectory, List<String> dependencies ) {
         destinationDirectory.mkdirs();
 
         javax.tools.JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
@@ -80,30 +108,11 @@ public class JavaCompiler {
         compilerCommandLineArgs.add( "6" );
 
         if ( !dependencies.isEmpty() ) {
-            String        pathSeparator    = System.getProperty("path.separator");
-            StringBuilder buf              = new StringBuilder(100);
-            boolean       includeSeparator = false;
+            String pathSeparator  = System.getProperty("path.separator");
+            String dependencyPath = ListUtils.concat( dependencies, pathSeparator );
 
-            for ( Dependency dependency : dependencies ) {
-                if ( dependency.projectModuleFlag ) {
-                    continue;
-                }
-
-                if ( includeSeparator ) {
-                    buf.append(pathSeparator);
-                } else {
-                    includeSeparator = true;
-                }
-
-                String dependencyLocation = locateDependency( dependency );
-
-                buf.append( dependencyLocation );
-            }
-
-            if ( includeSeparator ) {
-                compilerCommandLineArgs.add( "-classpath" );
-                compilerCommandLineArgs.add( buf.toString() );
-            }
+            compilerCommandLineArgs.add( "-classpath" );
+            compilerCommandLineArgs.add(dependencyPath);
         }
 
 
