@@ -1,4 +1,19 @@
 
+TODO:  (ahead of the cut)
+
+
+TODO running JC should run tests and fail if they fail
+TODO running mvn test should fail if they fail
+
+TODO dependency files support modules
+TODO dependency files support scopes
+
+TODO package JAR
+TODO package FATJAR
+
+
+
+
 
 
 // compile
@@ -63,27 +78,12 @@ tests/client/1_unit
 
 
 
-[GLOBAL]
-group:artifact:version
-
-
-[tests/client/micro]
-     group:artifact:version                   // as include
-     group:artifact:version  <exclude>
-     group:artifact:version  <runtimeonly>
-     group:artifact:version  <compiletimeonly>
-
-
-    //// localSrcName2:package
-
-    //// [localSrcName1:package RUNTIME]
-
 
 
 
 other ideas
 ---------
 
-project/acronyms    - defines common acronums and checks/communicates them within the ide
+project/acronyms    - defines common acronyms and checks/communicates them within the ide
 
 

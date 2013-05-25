@@ -77,6 +77,13 @@ public class JavaCompiler {
 //                    out.println( "Class-Path: lib/lib1.jar lib/lib2.jar" );
                     out.println( "Class-Path: "+dependencyPath  );
 
+
+                    // http://docs.oracle.com/javase/1.3/docs/guide/jar/jar.html#Notes%20on%20Manifest%20and%20Signature%20Files
+                    //Line length:
+                    //No line may be longer than 72 bytes (not characters), in its UTF8-encoded form. If a value would make the initial line longer than this, it should be continued on extra lines (each starting with a single SPACE).
+                    // Because header names cannot be continued, the maximum length of a header name is 70 bytes
+
+
 //                    out.printOnelineTag( "mainClass", fqn );
                 }
             } finally {
@@ -154,7 +161,6 @@ public class JavaCompiler {
         File   jarDirectory             = new File( artifactDirectory, dependency.versionNumber );
         File   jar                      = new File( jarDirectory, dependency.artifactName + "-" + dependency.versionNumber + ".jar" );
 
-        // todo integrate ivy
 
         try {
             return jar.getCanonicalPath();  //To change body of created methods use File | Settings | File Templates.
