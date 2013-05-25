@@ -2,6 +2,7 @@ package com.mosaic.jk.maven;
 
 import com.mosaic.jk.config.Config;
 import com.mosaic.jk.config.Dependency;
+import com.mosaic.jk.config.DependencyScope;
 import com.mosaic.jk.config.ModuleConfig;
 import com.mosaic.jk.env.Environment;
 import com.mosaic.jk.io.XMLWriter;
@@ -9,8 +10,6 @@ import com.mosaic.jk.utils.FileUtils;
 
 import java.io.File;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -296,7 +295,26 @@ public class POMWriter {
         out.printOnelineTag( "groupId", d.groupId );
         out.printOnelineTag( "artifactId", d.artifactName );
         out.printOnelineTag( "version", d.versionNumber );
+
+        if ( d.scope != DependencyScope.COMPILE ) {
+            out.printOnelineTag( "scope", formatDependencyScope(d.scope) );
+        }
+
         out.printEndTag( "dependency" );
+    }
+
+    private String formatDependencyScope(DependencyScope scope) {
+        if ( scope == DependencyScope.TEST ) {
+            return "test";
+        } else if ( scope == DependencyScope.RUNTIME ) {
+            return "runtime";
+        } else if ( scope == DependencyScope.PROVIDED ) {
+            return "provided";
+        } else if ( scope == DependencyScope.COMPILE ) {
+            return "compile";
+        }
+
+        return null;
     }
 
 }
