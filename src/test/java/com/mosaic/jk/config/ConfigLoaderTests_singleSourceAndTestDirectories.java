@@ -1,6 +1,8 @@
 package com.mosaic.jk.config;
 
 import com.mosaic.jk.TestUtils;
+import com.mosaic.jk.env.Environment;
+import com.mosaic.jk.env.EnvironmentFake;
 import org.junit.Test;
 
 import java.io.File;
@@ -15,7 +17,8 @@ import static org.junit.Assert.assertEquals;
  */
 public class ConfigLoaderTests_singleSourceAndTestDirectories {
 
-    private ConfigLoader configLoader         = new ConfigLoader();
+    private Environment  env                  = new EnvironmentFake();
+    private ConfigLoader configLoader         = new ConfigLoader(env);
     private File         zeroConfigProjectDir = TestUtils.examplesDir( "zeroConfig/singleSourceAndTestDirectories" );
     private Config       config               = configLoader.loadConfigFor( zeroConfigProjectDir );
 
@@ -81,8 +84,8 @@ public class ConfigLoaderTests_singleSourceAndTestDirectories {
     public void expectDefaultTestDependenciesOnly() {
         ModuleConfig module = config.modules.get(0);
 
-        Dependency junit   = new Dependency( "junit", "junit", "4.8.2" );
-        Dependency mockito = new Dependency( "org.mockito", "mockito-all", "1.9.5" );
+        Dependency junit   = new Dependency( DependencyScope.TEST, "junit", "junit", "4.8.2" );
+        Dependency mockito = new Dependency( DependencyScope.TEST, "org.mockito", "mockito-all", "1.9.5" );
 
 
         assertEquals( Arrays.asList( junit, mockito ), module.dependencies );

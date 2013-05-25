@@ -44,8 +44,8 @@ public class Main {
         compiler.compile(env, config);
     }
 
-    private static Config loadConfig( File rootDirectory ) {
-        return new ConfigLoader().loadConfigFor( rootDirectory );
+    private static Config loadConfig( Environment env, File rootDirectory ) {
+        return new ConfigLoader(env).loadConfigFor( rootDirectory );
     }
 
     private static File getRootDirectoryFromArgs( String[] args ) {
@@ -69,7 +69,7 @@ public class Main {
     public void setRootDirectory( File rootDirectory ) {
         this.rootDirectory = rootDirectory;
 
-        this.config = loadConfig(rootDirectory);
+        this.config = loadConfig(env, rootDirectory);
     }
 
     public boolean validateConfig() {

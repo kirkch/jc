@@ -1,5 +1,6 @@
 package com.mosaic.jk.config;
 
+import com.mosaic.jk.env.Environment;
 import com.mosaic.jk.io.IniFileDelegate;
 import com.mosaic.jk.io.ProjectWorkspace;
 import com.mosaic.jk.io.ProjectWorkspaceImpl;
@@ -19,6 +20,13 @@ import java.util.List;
  *
  */
 public class ConfigLoader {
+
+    private Environment env;
+
+    public ConfigLoader(Environment env) {
+        this.env = env;
+    }
+
 
     public Config loadConfigFor( File projectDirectory ) {
         ProjectWorkspace project = new ProjectWorkspaceImpl( projectDirectory );
@@ -119,7 +127,7 @@ public class ConfigLoader {
             return;
         }
 
-        final DependencyParser dependencyParser = new DependencyParser( projectName, versionNumber );
+        final DependencyParser dependencyParser = new DependencyParser( env, projectName, versionNumber );
         project.loadIniFile( "dependencies", new IniFileDelegate() {
             public void parsingStarted() {}
             public void parsingFinished() {}
@@ -144,8 +152,8 @@ public class ConfigLoader {
     }
 
     private List<Dependency> fetchDefaultDependencies() {
-        Dependency junit   = new Dependency( "junit", "junit", "4.8.2" );
-        Dependency mockito = new Dependency( "org.mockito", "mockito-all", "1.9.5" );
+        Dependency junit   = new Dependency( DependencyScope.TEST, "junit", "junit", "4.8.2" );
+        Dependency mockito = new Dependency( DependencyScope.TEST, "org.mockito", "mockito-all", "1.9.5" );
 
         return Arrays.asList(junit,mockito);
     }

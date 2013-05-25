@@ -12,11 +12,13 @@ public class Dependency {
 
     public Dependency() {}
 
-    public Dependency( String group, String artifact, String version ) {
-        this( group, artifact, version, null, false );
+
+    public Dependency( DependencyScope scope, String group, String artifact, String version ) {
+        this( scope, group, artifact, version, null, false );
     }
 
-    public Dependency( String group, String artifact, String version, String packageNbl, boolean projectModuleFlag ) {
+    public Dependency( DependencyScope scope, String group, String artifact, String version, String packageNbl, boolean projectModuleFlag ) {
+        this.scope             = scope;
         this.groupId           = group;
         this.artifactName      = artifact;
         this.versionNumber     = version;
@@ -24,10 +26,11 @@ public class Dependency {
         this.projectModuleFlag = projectModuleFlag;
     }
 
-    public String groupId;
-    public String artifactName;
-    public String versionNumber;
-    public String packageNbl;
+    public DependencyScope scope;
+    public String          groupId;
+    public String          artifactName;
+    public String          versionNumber;
+    public String          packageNbl;
 
     /**
      * Is this dependency pointing at a module within this build. False means that the dependency is external.

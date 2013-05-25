@@ -98,4 +98,14 @@ public class StringUtils {
         return endOfStringBoundaryExc;
     }
 
+    public static void trimArray( String[] array ) {
+        for ( int i=0; i<array.length; i++ ) {
+            array[i] = array[i].trim();
+        }
+    }
+
+    public static boolean isBlank(String str) {
+        return str == null || str.trim().length() == 0;
+    }
+
 }
