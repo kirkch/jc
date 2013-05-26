@@ -7,6 +7,9 @@ conventions there is another 30 lines of xml required to add another plugin.  An
 day sometimes I just want to throw some Java code at the wall and have it compile then and there.  No faffing about,
 no ritual dances and definitely no blood letting.  So JC was born.
 
+NB: JC is currently under early development. Please feel free to take a look and have a play. Any feedback
+on what is good, what is not and how to make it more useful for you would be great. Contact me at kirkch@gmail.com.
+
 
 ## What JC does
 
@@ -23,6 +26,14 @@ projects may want to manage releases and deployments, this is where Maven gets e
 mastering the development cycle, and once mastered it will focus on speeding it up.  Other tools should be used for the
 other stages, such as Python or good ol' reliable Bash scripts.  As an industry lets go back to having small power tools
 with a core focus, rather than big mammoth tools that try to consume and own everything.
+
+## Core JC Values
+
+* Supports zero configuration
+* Supports simple overrides for what matters
+* Is opinionated as to what matters (specifically compilation, testing and packaging only)
+* Declarative
+* Speed
 
 ## Where JC will go
 
