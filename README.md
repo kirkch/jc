@@ -35,6 +35,20 @@ are also fair game. But without having to add ten lines of config per language, 
 * And more speed.
 
 
+# JC Directory Structure
+
+    /project                    project configuration directory (optional)
+            /dependencies       lists jar file and inter module dependencies
+    /src                        may contain java code or module directories
+        /module1
+        /module2
+    /tests                      may contain unit tests directly or directories for module unit tests
+          /module1
+          /module2
+
+For a range of examples, see the [examples directory](examples).
+
+
 # Using JC
 
 ## Example 1: As simple as it gets
@@ -113,20 +127,18 @@ Where the dependencies are either paths to the base module directory or referenc
     mavenGroupId:mavenArtifactId:version  <compile|test|runtime|provided>
 
 The scope of the dependency defaults to 'compile', and thus can be left out.  If it is included then the angle brackets
-are required.  Thus a more complete example would be:
+are required.  Thus a more fuller example would be:
 
 
     junit:junit:4.8.2         <test>
 
 
     [client]
-
-    com.netflix.rxjava : rxjava-core : 0.8.4
-    io.netty           : netty-all   : 4.0.0.CR2
+      com.netflix.rxjava : rxjava-core : 0.8.4
+      io.netty           : netty-all   : 4.0.0.CR2
 
     [server]
-
-    client
+      client
 
 The format does ignore whitespace, thus the declarations can be lined up to help readability.
 
