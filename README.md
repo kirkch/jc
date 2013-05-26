@@ -71,8 +71,8 @@ the IDE files.
     echo '  }'                                                    >> tests/com/funky/MainTest.java
     echo '}'                                                      >> tests/com/funky/MainTest.java
 
-TODO running JC should fail
-TODO running mvn test should fail
+TODO JC currently does not run tests (but it will soon). However until then mvn test will run the tests.
+
 
 
 ## Example 3: Multiple modules
@@ -102,16 +102,11 @@ The format of the dependencies file is as follows
 
     globalDependencies
 
+    [moduleName]
 
-    [src/client]
+    mavenRepositoryDependency
+    localProjectModuleName
 
-    clientDependency1
-    clientDependency2
-
-    [src/server]
-
-    src/client
-    serverDependency1
 
 Where the dependencies are either paths to the base module directory or references to a Maven repository.
 
@@ -124,10 +119,14 @@ are required.  Thus a more complete example would be:
     junit:junit:4.8.2         <test>
 
 
-    [src/client]
+    [client]
 
     com.netflix.rxjava : rxjava-core : 0.8.4
     io.netty           : netty-all   : 4.0.0.CR2
+
+    [server]
+
+    client
 
 The format does ignore whitespace, thus the declarations can be lined up to help readability.
 

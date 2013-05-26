@@ -41,10 +41,19 @@ public class ProjectWorkspaceImpl implements ProjectWorkspace {
         return scanForRootSourceDirectories( sourceDirectory );
     }
 
-    public File[] scanForTestDirectories() {
-        File testDir = new File(rootDir,"tests");
+    public File[] scanForTestDirectories(  String moduleNameNbl  ) {
+        if ( moduleNameNbl == null ) {
+            File testDir = new File(rootDir,"tests");
 
-        return scanForRootSourceDirectories( testDir );
+            return scanForRootSourceDirectories( testDir );
+        } else {
+            File testDir = new File(rootDir,"tests/"+moduleNameNbl);
+            if ( testDir.exists() && scanForRootSourceDirectories(testDir).length > 0 ) {
+                return new File[] {testDir};
+            } else {
+                return new File[] {};
+            }
+        }
     }
 
     public boolean hasDependenciesFile() {

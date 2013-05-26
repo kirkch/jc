@@ -108,4 +108,13 @@ public class StringUtils {
         return str == null || str.trim().length() == 0;
     }
 
+    public static boolean isEqualTo(String a, String b) {
+        if ( a == b ) {
+            return true;
+        } else if ( a == null ) {
+            return false;
+        }
+
+        return a.equals(b);
+    }
 }

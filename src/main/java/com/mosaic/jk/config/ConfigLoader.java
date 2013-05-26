@@ -42,7 +42,7 @@ public class ConfigLoader {
         config.destinationDirectory = new File( projectDirectory, "target/classes" );
 
         try {
-            loadDependenciesIntoModuleObjects( config.projectName, config.versionNumber, config.modules, project );
+            loadDependenciesIntoModuleObjects( config.groupId, config.versionNumber, config.modules, project );
         } catch ( IOException e ) {
             throw new RuntimeException(e);
         }
@@ -104,19 +104,24 @@ public class ConfigLoader {
     private List<ModuleConfig> loadModuleInformation( ProjectWorkspace project ) {
         List<ModuleConfig> modules = new ArrayList<ModuleConfig>();
 
-        ModuleConfig module = new ModuleConfig();
+        File[] sourceDirectories = fetchDefaultSourceDirectories( project );
 
-        module.sourceDirectories = fetchDefaultSourceDirectories( project );
-        module.testDirectories   = fetchDefaultTestDirectories( project );
-        module.mainFQNs          = fetchDefaultMainFQN( module.sourceDirectories );
-        module.packageType = "JAR";
+        for ( File sourceDirectory : sourceDirectories ) {
+            ModuleConfig module = new ModuleConfig();
 
-        modules.add( module );
+            module.moduleNameNbl     = sourceDirectory.getName().equals("src") ? null : sourceDirectory.getName();
+            module.sourceDirectories = new File[] {sourceDirectory};
+            module.testDirectories   = fetchDefaultTestDirectories( project, module.moduleNameNbl );
+            module.mainFQNs          = fetchDefaultMainFQN( module.sourceDirectories );
+            module.packageType = "JAR";
+
+            modules.add( module );
+        }
 
         return modules;
     }
 
-    private void loadDependenciesIntoModuleObjects( final String projectName, final String versionNumber, final List<ModuleConfig> modules, ProjectWorkspace project ) throws IOException {
+    private void loadDependenciesIntoModuleObjects( final String projectGroup, final String versionNumber, final List<ModuleConfig> modules, ProjectWorkspace project ) throws IOException {
         if ( !project.hasDependenciesFile() ) {
             List<Dependency> defaultDependencies = fetchDefaultDependencies();
 
@@ -127,20 +132,25 @@ public class ConfigLoader {
             return;
         }
 
-        final DependencyParser dependencyParser = new DependencyParser( env, projectName, versionNumber );
+        final DependencyParser dependencyParser = new DependencyParser( env, projectGroup, versionNumber );
         project.loadIniFile( "dependencies", new IniFileDelegate() {
+            private String targetModuleNameNbl = null;
+
             public void parsingStarted() {}
             public void parsingFinished() {}
 
 
             public void labelRead( String label ) {
+                targetModuleNameNbl = label;
             }
 
             public void lineRead( String line ) {
                 Dependency dependency = dependencyParser.parseDependency( line );
 
                 for ( ModuleConfig module : modules ) {
-                    module.dependencies.add( dependency );
+                    if ( targetModuleNameNbl == null || StringUtils.isEqualTo(module.moduleNameNbl, targetModuleNameNbl) ) {
+                        module.dependencies.add( dependency );
+                    }
                 }
             }
         } );
@@ -158,8 +168,8 @@ public class ConfigLoader {
         return Arrays.asList(junit,mockito);
     }
 
-    private File[] fetchDefaultTestDirectories( ProjectWorkspace project ) {
-        return project.scanForTestDirectories();
+    private File[] fetchDefaultTestDirectories( ProjectWorkspace project, String moduleName ) {
+        return project.scanForTestDirectories( moduleName );
     }
 
     private File[] fetchDefaultSourceDirectories( ProjectWorkspace project ) {

@@ -208,6 +208,7 @@ public class POMWriter {
         out.printStartTag("build" );
 
         out.printOnelineTag( "sourceDirectory", "src" );
+        out.printOnelineTag( "testSourceDirectory", "tests" );
         printResourceDirectories( config );
 
         out.printStartTags("plugins");

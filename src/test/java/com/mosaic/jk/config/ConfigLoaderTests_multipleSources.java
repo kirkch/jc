@@ -3,13 +3,17 @@ package com.mosaic.jk.config;
 import com.mosaic.jk.TestUtils;
 import com.mosaic.jk.env.Environment;
 import com.mosaic.jk.env.EnvironmentFake;
+import com.mosaic.jk.utils.Function1;
+import com.mosaic.jk.utils.ListUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import static com.mosaic.jk.TestUtils.assertArrayEqualsIgnoreOrder;
-import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
@@ -41,41 +45,94 @@ public class ConfigLoaderTests_multipleSources {
 
     @Test
     public void expectOnlyOneModule() {
-        assertEquals( 1, config.modules.size() );
+        assertEquals( 2, config.modules.size() );
     }
 
     @Test
     public void expectImplicitModule_thatIsNoModuleName() {
-        ModuleConfig module = config.modules.get(0);
+        List<String> moduleNames = ListUtils.map(config.modules, new Function1<ModuleConfig, String>() {
+            public String invoke(ModuleConfig m) {
+                return m.moduleNameNbl;
+            }
+        });
 
-        assertNull( module.moduleNameNbl );
+        Collections.sort(moduleNames);
+
+        assertEquals( Arrays.asList("client","server"), moduleNames );
     }
 
     @Test
-    public void expectMainClass() {
-        ModuleConfig module = config.modules.get(0);
+    public void expectServerMainClass() {
+        ModuleConfig module = ListUtils.selectFirstMatch(config.modules, new Function1<ModuleConfig, Boolean>() {
+            public Boolean invoke(ModuleConfig m) {
+                return StringUtils.equals(m.moduleNameNbl, "server");
+            }
+        });
 
         assertArrayEquals( new String[] {"com.mosaic.server.Main"}, module.mainFQNs );
     }
 
     @Test
-    public void expectSourceDirectory() {
-        ModuleConfig module    = config.modules.get(0);
-        File         sourceDir = new File(zeroConfigProjectDir, "src");
-        File         clientDir = new File(sourceDir, "client");
-        File         serverDir = new File(sourceDir, "server");
+    public void expectNoClientMainClass() {
+        ModuleConfig module = ListUtils.selectFirstMatch(config.modules, new Function1<ModuleConfig, Boolean>() {
+            public Boolean invoke(ModuleConfig m) {
+                return StringUtils.equals(m.moduleNameNbl, "client");
+            }
+        });
 
-        assertArrayEqualsIgnoreOrder( new File[] {clientDir, serverDir}, module.sourceDirectories );
+        assertArrayEquals( new String[] {}, module.mainFQNs );
     }
 
     @Test
-    public void expectTestSourceDirectories() {
-        ModuleConfig module    = config.modules.get(0);
-        File         testDir   = new File(zeroConfigProjectDir, "tests");
-        File         clientDir = new File(testDir, "client");
-        File         serverDir = new File(testDir, "server");
+    public void expectClientSourceDirectory() {
+        ModuleConfig module = ListUtils.selectFirstMatch(config.modules, new Function1<ModuleConfig, Boolean>() {
+            public Boolean invoke(ModuleConfig m) {
+                return StringUtils.equals(m.moduleNameNbl, "client");
+            }
+        });
 
-        assertArrayEqualsIgnoreOrder( new File[] {clientDir, serverDir}, module.testDirectories );
+        File expectedSourceDir = new File(zeroConfigProjectDir, "src/client");
+
+        assertArrayEqualsIgnoreOrder( new File[] {expectedSourceDir}, module.sourceDirectories );
+    }
+
+    @Test
+    public void expectServerSourceDirectory() {
+        ModuleConfig module = ListUtils.selectFirstMatch(config.modules, new Function1<ModuleConfig, Boolean>() {
+            public Boolean invoke(ModuleConfig m) {
+                return StringUtils.equals(m.moduleNameNbl, "server");
+            }
+        });
+
+        File expectedSourceDir = new File(zeroConfigProjectDir, "src/server");
+
+        assertArrayEqualsIgnoreOrder( new File[] {expectedSourceDir}, module.sourceDirectories );
+    }
+
+    @Test
+    public void expectClientTestSourceDirectory() {
+        ModuleConfig module = ListUtils.selectFirstMatch(config.modules, new Function1<ModuleConfig, Boolean>() {
+            public Boolean invoke(ModuleConfig m) {
+                return StringUtils.equals(m.moduleNameNbl, "client");
+            }
+        });
+
+        File expectedSourceDir = new File(zeroConfigProjectDir, "tests/client");
+
+        assertArrayEqualsIgnoreOrder( new File[] {expectedSourceDir}, module.testDirectories );
+    }
+
+    @Test
+    public void expectTestServerSourceDirectory() {
+        ModuleConfig module = ListUtils.selectFirstMatch(config.modules, new Function1<ModuleConfig, Boolean>() {
+            public Boolean invoke(ModuleConfig m) {
+                return StringUtils.equals(m.moduleNameNbl, "server");
+            }
+        });
+
+        File expectedSourceDir = new File(zeroConfigProjectDir, "tests/server");
+
+        assertArrayEqualsIgnoreOrder( new File[] {expectedSourceDir}, module.testDirectories );
     }
 
     @Test

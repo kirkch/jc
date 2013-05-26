@@ -3,14 +3,12 @@ TODO:  (ahead of the cut)
 
 
 TODO running JC should run tests and fail if they fail
-TODO running mvn test should fail if they fail
 
-TODO dependency files support modules
-TODO dependency files support scopes
+TODO dependency files support exclude scope
 
 TODO package JAR
 TODO package FATJAR
-
+TODO manifest line limit for class path
 
 
 
