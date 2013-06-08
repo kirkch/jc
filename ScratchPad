@@ -10,79 +10,157 @@ TODO package JAR
 TODO package FATJAR
 TODO manifest line limit for class path
 
-
-
-
-
-
-// compile
-// unit tests  -- faster after packaged?
-// package
-// inmemory package tests    faked boundary tests      meat tests
-
-
-    // atests   btests
-
-
-
-    // unit tests - smoke tests
-    // (a/b)          ()
-    //               does the system do what it should (functional)
-    //               is it up
-    //               is it installed correctly
-    //               does it perform
-    //               does it scale
-    //               is it localised
-
-
-//    artifacts  (default all modules into one)
-//    [JAR]  // default      JAR   FATJAR     WAR EAR
-//    moduleName1
-//    moduleName2         will package all of its dependencies into one place
-
-
-/project/terminology
-
-links to wikipedia, katas, benchmarks, examples
-
-[tests]
-unit -> unit test(s)
-    Very short, very fast inmemory tests that each check a single part of the api. In mass they provide confidence that
-    functions within the code base meet their requirements. A Unit Test is best written at the point of reuse of a class
-    and/or at the point of non-trivial logic. Unit tests must setup and tear down their own environment with no dependencies,
-    with the acid test being that each unit test could be run in parallel and in any order with no side effects between each other.
-micro -> microbenchmark(s)
-    Measures the duration of repeatedly running the same block of code over and over again. Used to compare different
-    implementation approaches. The ideal microbenchmark warms the JVM first, does not result in GC during the test
-    and provides consistent results between test runs.
-acc -> acceptance tests | isolated system tests
-smoke -> smoke tests
-load -> load tests
-
-[java]
-JVM ->
-GC ->
-warms the JVM ->
-
-unit tests
-isolated system tests/itests/inttests
-acctests
-
-tests/client/1_unit
-            /2_micro
-            /3_int
-            /4_acc
-            /5_smoke
-            /6_load
+TODO support comments in dependencies file
+#com.mosaic         : threadtesting-mosaic : 0.0.1-SNAPSHOT     <test>
 
 
 
 
 
 
-other ideas
----------
+repos
 
-project/acronyms    - defines common acronyms and checks/communicates them within the ide
+    <distributionManagement>
+        <repository>
+            <id>softwaremosaic-nexus</id>
+            <name>Releases</name>
+            <url>http://nexus.private.softwaremosaic.co.uk:8002/nexus/content/repositories/releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>softwaremosaic-nexus</id>
+            <name>Snapshots</name>
+            <url>http://nexus.private.softwaremosaic.co.uk:8002/nexus/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
 
 
+    <repositories>
+            <repository>
+                <id>softwaremosaic-nexus-public</id>
+                <name>internal repo</name>
+                <url>http://nexus.private.softwaremosaic.co.uk:8002/nexus/content/groups/public</url>
+                <snapshots>
+                    <enabled>true</enabled>
+                </snapshots>
+            </repository>
+        </repositories>
+
+
+<settings>
+  <servers>
+    <server>
+       <id>softwaremosaic-nexus</id>
+       <username>deployment</username>
+       <password>$$$$$$</password>
+     </server>
+  </servers>
+</settings>
+
+
+Detect SCM
+-------
+
+    <scm>
+        <developerConnection>scm:svn:<Subversion project path to trunk here></developerConnection>
+        <connection>scm:svn:<Subversion project path to trunk here></connection>
+        <url><Subversion project path to trunk here></url>
+    </scm>
+
+
+    <url><!-- url here --></url>
+
+    <organization>
+       <!-- organization here -->
+    </organization>
+
+    <developers>
+      <!-- developers here -->
+    </developers>
+
+
+add to .gitignore
+
+
+
+mvn idea:idea
+   still gets test modules wrong
+
+
+
+version scheme
+-------------
+
+Does not support SNAPSHOT builds; SNAPSHOT is not Continuous Deployment friendly.
+
+
+starts from 0.0.1, override in project/config  (eg version=0.0.2)
+
+builds to 0.0.1-{buildName}_{buildNum}
+
+eg  0.0.1-ck_23
+or  0.0.1-release_10
+
+The name defaults to the OS user name.  Can be overridden with -DbuildName=release. Useful for CI builds.
+
+
+The build number starts from 1 and increments each time jc is run.  The incrementing number is stored to disk
+in ~/.jc/{project}/buildnumber.  Thus number is not transfered between machines.
+
+A custom number can be passed in via -DbuildNumber=X.  Useful for integrating with builds, which manage their
+own build number.
+
+
+Q: How to manage dependency clashes
+Q: How to know when new versions exist
+Q: How long to keep 'old' builds around
+Q: How to manage local and remote repositories
+
+
+idea: place maven repos and dep refs in META-INF
+  new bootstrap class loader downloads if dependencies are not found
+
+idea: keep last used timestamp on dependencies
+      have a clean out of really old unused stuff
+      ttl changable by tags (eg release very long, ck frequent)
+
+
+Packaging
+----
+
+Fat jar or thin jar?
+
+Each module, or one with main?
+
+What if there are multiple mains?
+
+
+Git support
+----
+
+Tag releases
+Include git hash in jar files
+
+
+Plugin support
+----
+
+
+
+MicroBenchmark support
+--------
+
+
+
+
+
+Usages:
+
+jc    (compile, test, package
+
+jc compile
+jc test
+jc package
+
+
+jc install
+jc

@@ -14,6 +14,7 @@ public class Config {
     public String projectName;
     public String versionNumber;       // x.y.z-T      release-10.7.1.229     ck-10.7.1.2     build-(ver).(count)    (ver)-(attr)    10.7.1.229-release
 
+    public String javaVersion;
 
     public File rootDirectory;
     public File destinationDirectory;

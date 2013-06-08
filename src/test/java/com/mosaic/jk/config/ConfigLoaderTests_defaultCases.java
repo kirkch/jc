@@ -39,6 +39,11 @@ public class ConfigLoaderTests_defaultCases {
     }
 
     @Test
+    public void defaultJavaVersion() {
+        assertEquals( "1.6", config.javaVersion );
+    }
+
+    @Test
     public void expectDestinationDirectory() {
         assertEquals( new File(config.rootDirectory, "target/classes"), config.destinationDirectory );
     }

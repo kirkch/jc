@@ -11,10 +11,7 @@ import com.mosaic.jk.utils.VoidFunction1;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  *
@@ -43,6 +40,10 @@ public class ConfigLoader {
 
         try {
             loadDependenciesIntoModuleObjects( config.groupId, config.versionNumber, config.modules, project );
+
+
+            Properties metaConfig = project.loadPropertiesFile( "meta" );
+            config.javaVersion = metaConfig.getProperty( "java", "1.6" );
         } catch ( IOException e ) {
             throw new RuntimeException(e);
         }

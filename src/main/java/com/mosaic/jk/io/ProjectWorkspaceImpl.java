@@ -3,15 +3,8 @@ package com.mosaic.jk.io;
 import com.mosaic.jk.utils.FileUtils;
 import com.mosaic.jk.utils.SetUtils;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.io.Reader;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Set;
+import java.io.*;
+import java.util.*;
 
 /**
  *
@@ -28,11 +21,13 @@ public class ProjectWorkspaceImpl implements ProjectWorkspace {
     };
 
     private File rootDir;
+    private File projectDir;
     private File dependenciesFile;
 
     public ProjectWorkspaceImpl( File rootDir ) {
         this.rootDir          = rootDir;
-        this.dependenciesFile = new File(rootDir,"project/dependencies");
+        this.projectDir       = new File(rootDir,"project");
+        this.dependenciesFile = new File(projectDir,"dependencies");
     }
 
     public File[] scanForSourceDirectories() {
@@ -71,6 +66,17 @@ public class ProjectWorkspaceImpl implements ProjectWorkspace {
         }
     }
 
+    public Properties loadPropertiesFile( String name ) {
+        Properties props = new Properties();
+
+        try {
+            props.load( new FileInputStream(new File(projectDir,name)) );
+        } catch (IOException e) {
+
+        }
+
+        return props;
+    }
 
 
 

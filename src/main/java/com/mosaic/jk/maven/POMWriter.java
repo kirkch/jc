@@ -270,6 +270,31 @@ public class POMWriter {
         out.printEndTags("execution", "executions");
 
         out.printEndTags( "plugin" );
+
+
+
+        // Configure mvn idea:idea to download sources and attach to intellij
+        out.printStartTag("plugin");
+        out.printOnelineTag("groupId", "org.apache.maven.plugins");
+        out.printOnelineTag("artifactId", "maven-idea-plugin");
+        out.printOnelineTag("version", "2.2");
+        out.printStartTag("configuration");
+        out.printOnelineTag("downloadSources", "true");
+//        out.printOnelineTag("downloadJavadocs", "true");
+        out.printEndTags( "configuration","plugin" );
+
+
+
+        out.printStartTag("plugin");
+        out.printOnelineTag("groupId", "org.apache.maven.plugins");
+        out.printOnelineTag("artifactId", "maven-compiler-plugin");
+        out.printOnelineTag("version", "3.1");
+        out.printStartTag("configuration");
+        out.printOnelineTag("source", config.javaVersion);
+        out.printOnelineTag("target", config.javaVersion);
+        out.printEndTags( "configuration","plugin" );
+
+
     }
 
 
