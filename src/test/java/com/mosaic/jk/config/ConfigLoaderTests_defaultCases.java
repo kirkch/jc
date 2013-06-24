@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.Collections;
 
 import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.assertArrayEquals;
@@ -57,14 +58,14 @@ public class ConfigLoaderTests_defaultCases {
     public void expectImplicitModule_thatIsNoModuleName() {
         ModuleConfig module = config.modules.get(0);
 
-        assertNull( module.moduleNameNbl );
+        assertNull(module.moduleNameNbl);
     }
 
     @Test
     public void expectOneMainClass() {
         ModuleConfig module = config.modules.get(0);
 
-        assertArrayEquals( new String[] {"com.s5.zeroconfig.Main"}, module.mainFQNs );
+        assertArrayEquals(new String[]{"com.s5.zeroconfig.Main"}, module.mainFQNs);
     }
 
     @Test
@@ -86,7 +87,14 @@ public class ConfigLoaderTests_defaultCases {
     public void expectSingleJar() {
         ModuleConfig module = config.modules.get(0);
 
-        assertEquals( "JAR", module.packageType );
+        assertEquals("JAR", module.packageType);
+    }
+
+    @Test
+    public void expectNoRepositoryURLs() {
+//        assertEquals(Collections.EMPTY_LIST, config.downloadRepositoryURLs );
+//        assertEquals(Collections.EMPTY_LIST, config.uploadReleaseRepositoryURLs );
+//        assertEquals(Collections.EMPTY_LIST, config.uploadSnapshotRepositoryURLs );
     }
 
     @Test

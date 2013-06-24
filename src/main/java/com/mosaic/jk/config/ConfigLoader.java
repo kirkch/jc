@@ -38,6 +38,10 @@ public class ConfigLoader {
         config.rootDirectory        = projectDirectory;
         config.destinationDirectory = new File( projectDirectory, "target/classes" );
 
+//        config.downloadRepositoryURLs       = Collections.EMPTY_LIST;
+//        config.uploadReleaseRepositoryURLs  = Collections.EMPTY_LIST;
+//        config.uploadSnapshotRepositoryURLs = Collections.EMPTY_LIST;
+
         try {
             loadDependenciesIntoModuleObjects( config.groupId, config.versionNumber, config.modules, project );
 

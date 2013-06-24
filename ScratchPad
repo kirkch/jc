@@ -1,5 +1,6 @@
 
 TODO:  (ahead of the cut)
+==================
 
 
 TODO running JC should run tests and fail if they fail
@@ -8,6 +9,8 @@ TODO dependency files support exclude scope
 
 TODO package JAR
 TODO package FATJAR
+TODO package IVYJAR
+TODO package MAVENJAR
 TODO manifest line limit for class path
 
 TODO support comments in dependencies file
@@ -15,10 +18,43 @@ TODO support comments in dependencies file
 
 
 
+auto update dependencies:
 
+jc dependency-tree
+jc dependency-update
+jc dependency-check
+
+
+Cloud Build
+Cloud Mosaic
+Software Mosaic
+Mega Maid
+Red 6
 
 
 repos
+
+
+            http://nexus.private.softwaremosaic.co.uk:8002/nexus/content/groups/public
+RepoName:   http://nexus.private.softwaremosaic.co.uk:8002/nexus/content/groups/public
+
+
+meta:
+supportSnapshots = true   # defaults to false
+
+
+To upload to a repo, from command line:
+
+> jc upload [RepoName]
+
+
+meta:
+releaseRepos=a,b,c
+releaseSourceCode=true
+releaseJavaDocs=true
+artifacts=a,b,c   # defaults to 'project'
+
+
 
     <distributionManagement>
         <repository>
@@ -104,7 +140,7 @@ The name defaults to the OS user name.  Can be overridden with -DbuildName=relea
 
 
 The build number starts from 1 and increments each time jc is run.  The incrementing number is stored to disk
-in ~/.jc/{project}/buildnumber.  Thus number is not transfered between machines.
+in ~/.jc/{project}/buildnumber.  Thus number is not transferred between machines.
 
 A custom number can be passed in via -DbuildNumber=X.  Useful for integrating with builds, which manage their
 own build number.
@@ -164,3 +200,51 @@ jc package
 
 jc install
 jc
+
+
+
+
+Repository
+==========
+
+On Upload:
+- is jar backwards compatible with last version?
+    - removing deprecated stuff is okay
+- stats on download counts/ref usage
+- alert to dependency clashes
+- prune unused libs (re-build on use)
+
+
+- hooks to standard docs
+    - release notes
+    - bug reports
+    - bug stats
+    - forums
+    - documentation
+    - road map
+    - voting
+    - stack overflow feed
+    - code coverage
+    - developer stats
+
+
+- capture exceptions while running
+
+
+- auto support for jClarity?
+
+
+
+
+AWS
+
+
+project meta
+    ami
+    min machine size
+
+environment meta
+    facebook credentials
+    dns
+
+

@@ -19,7 +19,11 @@ public class Config {
     public File rootDirectory;
     public File destinationDirectory;
 
-    public List<ModuleConfig> modules;
+
+    public List<ModuleConfig>  modules;
+
+    public RepositoryRef       uploadReleaseRepositoryURLs;
+    public List<RepositoryRef> downloadRepositoryURLs;
 
 
 
