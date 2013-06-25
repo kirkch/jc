@@ -4,10 +4,7 @@ import com.mosaic.jk.env.Environment;
 import com.mosaic.jk.io.IniFileDelegate;
 import com.mosaic.jk.io.ProjectWorkspace;
 import com.mosaic.jk.io.ProjectWorkspaceImpl;
-import com.mosaic.jk.utils.FileUtils;
-import com.mosaic.jk.utils.ListUtils;
-import com.mosaic.jk.utils.StringUtils;
-import com.mosaic.jk.utils.VoidFunction1;
+import com.mosaic.jk.utils.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,6 +13,7 @@ import java.util.*;
 /**
  *
  */
+@SuppressWarnings("unchecked")
 public class ConfigLoader {
 
     private Environment env;
@@ -38,9 +36,7 @@ public class ConfigLoader {
         config.rootDirectory        = projectDirectory;
         config.destinationDirectory = new File( projectDirectory, "target/classes" );
 
-//        config.downloadRepositoryURLs       = Collections.EMPTY_LIST;
-//        config.uploadReleaseRepositoryURLs  = Collections.EMPTY_LIST;
-//        config.uploadSnapshotRepositoryURLs = Collections.EMPTY_LIST;
+        config.downloadRepositories = project.loadRepositories();
 
         try {
             loadDependenciesIntoModuleObjects( config.groupId, config.versionNumber, config.modules, project );
@@ -159,11 +155,6 @@ public class ConfigLoader {
                 }
             }
         } );
-
-
-
-     // todo assign defaults
-//        return fetchDefaultDependencies();
     }
 
     private List<Dependency> fetchDefaultDependencies() {

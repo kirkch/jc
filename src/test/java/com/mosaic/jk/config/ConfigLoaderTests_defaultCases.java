@@ -92,9 +92,7 @@ public class ConfigLoaderTests_defaultCases {
 
     @Test
     public void expectNoRepositoryURLs() {
-//        assertEquals(Collections.EMPTY_LIST, config.downloadRepositoryURLs );
-//        assertEquals(Collections.EMPTY_LIST, config.uploadReleaseRepositoryURLs );
-//        assertEquals(Collections.EMPTY_LIST, config.uploadSnapshotRepositoryURLs );
+        assertEquals(Collections.EMPTY_LIST, config.downloadRepositories );
     }
 
     @Test

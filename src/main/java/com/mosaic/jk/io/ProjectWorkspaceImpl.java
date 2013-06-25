@@ -1,7 +1,11 @@
 package com.mosaic.jk.io;
 
+import com.mosaic.jk.config.RepositoryRef;
+import com.mosaic.jk.config.RepositoryRefParser;
 import com.mosaic.jk.utils.FileUtils;
+import com.mosaic.jk.utils.Function1;
 import com.mosaic.jk.utils.SetUtils;
+import com.mosaic.jk.utils.StringUtils;
 
 import java.io.*;
 import java.util.*;
@@ -9,6 +13,7 @@ import java.util.*;
 /**
  *
  */
+@SuppressWarnings("unchecked")
 public class ProjectWorkspaceImpl implements ProjectWorkspace {
 
     private static final FilenameFilter BASEPACKAGENAME_FILEMATCHER = new FilenameFilter() {
@@ -23,11 +28,13 @@ public class ProjectWorkspaceImpl implements ProjectWorkspace {
     private File rootDir;
     private File projectDir;
     private File dependenciesFile;
+    private File repositoriesFile;
 
     public ProjectWorkspaceImpl( File rootDir ) {
         this.rootDir          = rootDir;
         this.projectDir       = new File(rootDir,"project");
         this.dependenciesFile = new File(projectDir,"dependencies");
+        this.repositoriesFile = new File(projectDir,"repositories");
     }
 
     public File[] scanForSourceDirectories() {
@@ -78,7 +85,50 @@ public class ProjectWorkspaceImpl implements ProjectWorkspace {
         return props;
     }
 
+    public List<RepositoryRef> loadRepositories() {
+        Function1<String,RepositoryRef> lineParser = new Function1<String, RepositoryRef>() {
+            private RepositoryRefParser p = new RepositoryRefParser();
 
+            public RepositoryRef invoke(String line) {
+                return p.parseRef(line);
+            }
+        };
+
+        try {
+            return loadTextFile( repositoriesFile, Collections.EMPTY_LIST, lineParser );
+        } catch ( IOException e ) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    private <T> List<T> loadTextFile( File file, List<T> defaultResults, Function1<String, T> lineParser ) throws FileNotFoundException {
+        if ( !file.exists() ) {
+            return defaultResults;
+        }
+
+        LineNumberReader reader = new LineNumberReader(new FileReader(file));
+        try {
+            List<T> results = new ArrayList<T>();
+            String nextLine = reader.readLine();
+
+            while ( nextLine != null ) {
+                if ( !StringUtils.isBlank(nextLine) ) {
+                    T result = lineParser.invoke(nextLine);
+
+                    if ( result != null ) {
+                        results.add(result);
+                    }
+                }
+
+                nextLine = reader.readLine();
+            }
+
+            return results;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 
     private File[] scanForRootSourceDirectories( File dir ) {

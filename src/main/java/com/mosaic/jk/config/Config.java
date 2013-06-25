@@ -22,8 +22,7 @@ public class Config {
 
     public List<ModuleConfig>  modules;
 
-    public RepositoryRef       uploadReleaseRepositoryURLs;
-    public List<RepositoryRef> downloadRepositoryURLs;
+    public List<RepositoryRef> downloadRepositories;
 
 
 
