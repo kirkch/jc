@@ -34,6 +34,8 @@ Red 6
 
 repos
 
+add repo usage to ivy
+
 meta:
 supportSnapshots = true   # defaults to false
 

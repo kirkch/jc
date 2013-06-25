@@ -3,6 +3,7 @@ package com.mosaic.jk.compilers.java;
 import com.mosaic.jk.config.Config;
 import com.mosaic.jk.config.Dependency;
 import com.mosaic.jk.config.ModuleConfig;
+import com.mosaic.jk.config.RepositoryRef;
 import com.mosaic.jk.env.Environment;
 import com.mosaic.jk.utils.ListUtils;
 
@@ -15,6 +16,7 @@ import java.util.*;
 /**
  *
  */
+@SuppressWarnings({"ResultOfMethodCallIgnored", "unchecked"})
 public class JavaCompiler {
 
     public void compile( Environment env, Config config ) {
@@ -27,22 +29,24 @@ public class JavaCompiler {
             dependencies.addAll( module.dependencies );
         }
 
-        List<String> resolvedExternalDependencies = resolveDependencies( dependencies );
+        List<String> resolvedExternalDependencies = resolveDependencies( config.downloadRepositories, dependencies );
         compile( sourceDirectories, config.destinationDirectory, resolvedExternalDependencies );
 
         generateManifest( env, config, resolvedExternalDependencies );
     }
 
-    private List<String> resolveDependencies( Set<Dependency> dependencies ) {
+    private List<String> resolveDependencies( List<RepositoryRef> downloadRepositories, Set<Dependency> dependencies ) {
         List<String> resolvedDependencies = new ArrayList<String>( dependencies.size() );
+
+        IvyArtifactResolver resolver = new IvyArtifactResolver();
+        resolver.addRepositories( downloadRepositories );
 
         for ( Dependency dependency : dependencies ) {
             if ( dependency.projectModuleFlag ) {
                 continue;
             }
 
-
-            String dependencyLocation = locateDependency( dependency );
+            String dependencyLocation = resolver.resolveArtifact( dependency ).getPath();
 
             resolvedDependencies.add(dependencyLocation);
         }
@@ -143,31 +147,31 @@ public class JavaCompiler {
         System.out.println( "compilation durationMillis = " + durationMillis + " " + success);
     }
 
-    private String locateDependency( Dependency dependency ) {
-        boolean useIvy = true;
-        if ( useIvy ) {
-            IvyArtifactResolver r = new IvyArtifactResolver();
-
-            return r.resolveArtifact(dependency).getPath();
-        }
-
-
-        assert dependency.isExternal();
-
-        String directorySeparator       = System.getProperty("file.separator");
-        File   mavenRepositoryDirectory = new File("~/.m2/repository");
-        File   groupDirectory           = new File( mavenRepositoryDirectory, dependency.groupId.replaceAll("\\.",directorySeparator));
-        File   artifactDirectory        = new File( groupDirectory, dependency.artifactName );
-        File   jarDirectory             = new File( artifactDirectory, dependency.versionNumber );
-        File   jar                      = new File( jarDirectory, dependency.artifactName + "-" + dependency.versionNumber + ".jar" );
-
-
-        try {
-            return jar.getCanonicalPath();  //To change body of created methods use File | Settings | File Templates.
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
+//    private String locateDependency( Dependency dependency ) {
+//        boolean useIvy = true;
+//        if ( useIvy ) {
+//            IvyArtifactResolver r = new IvyArtifactResolver();
+//
+//            return r.resolveArtifact(dependency).getPath();
+//        }
+//
+//
+//        assert dependency.isExternal();
+//
+//        String directorySeparator       = System.getProperty("file.separator");
+//        File   mavenRepositoryDirectory = new File("~/.m2/repository");
+//        File   groupDirectory           = new File( mavenRepositoryDirectory, dependency.groupId.replaceAll("\\.",directorySeparator));
+//        File   artifactDirectory        = new File( groupDirectory, dependency.artifactName );
+//        File   jarDirectory             = new File( artifactDirectory, dependency.versionNumber );
+//        File   jar                      = new File( jarDirectory, dependency.artifactName + "-" + dependency.versionNumber + ".jar" );
+//
+//
+//        try {
+//            return jar.getCanonicalPath();  //To change body of created methods use File | Settings | File Templates.
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 
     private static List<JavaFile> scanForAllJavaFiles( File root ) {
         Stack<File> nextDirectoryStack = new Stack<File>();
@@ -256,29 +260,30 @@ class JavaClassFile extends SimpleJavaFileObject {
         this.file = file;
     }
 
-    public byte[] getBytes() {
-        byte[] buf = new byte[(int) file.length()];
-
-        try {
-            FileInputStream in = new FileInputStream( file );
-
-            try {
-                in.read( buf );
-            } finally {
-                in.close();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return buf;
-    }
+//    public byte[] getBytes() {
+//        byte[] buf = new byte[(int) file.length()];
+//
+//        try {
+//            FileInputStream in = new FileInputStream( file );
+//
+//            try {
+//                in.read( buf );
+//            } finally {
+//                in.close();
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//        return buf;
+//    }
 
     public OutputStream openOutputStream() throws IOException {
         return new FileOutputStream(file);
     }
 }
 
+@SuppressWarnings({"unchecked", "ResultOfMethodCallIgnored"})
 class ClassFileManager extends ForwardingJavaFileManager {
 
 
