@@ -34,11 +34,6 @@ Red 6
 
 repos
 
-
-            http://nexus.private.softwaremosaic.co.uk:8002/nexus/content/groups/public
-RepoName:   http://nexus.private.softwaremosaic.co.uk:8002/nexus/content/groups/public
-
-
 meta:
 supportSnapshots = true   # defaults to false
 
@@ -68,18 +63,6 @@ artifacts=a,b,c   # defaults to 'project'
             <url>http://nexus.private.softwaremosaic.co.uk:8002/nexus/content/repositories/snapshots</url>
         </snapshotRepository>
     </distributionManagement>
-
-
-    <repositories>
-            <repository>
-                <id>softwaremosaic-nexus-public</id>
-                <name>internal repo</name>
-                <url>http://nexus.private.softwaremosaic.co.uk:8002/nexus/content/groups/public</url>
-                <snapshots>
-                    <enabled>true</enabled>
-                </snapshots>
-            </repository>
-        </repositories>
 
 
 <settings>

@@ -27,7 +27,7 @@ public class ConfigLoaderTests_repositories {
     public void defaultGroupId() {
         List<RepositoryRef> expectedRefs = Arrays.asList(
                 new RepositoryRef("My Release Repo", "http://nexus.mycompany.com/repository"),
-                new RepositoryRef(null, "http://nexus.sonatype.com/repository"),
+                new RepositoryRef("nexus.sonatype.com Repository", "http://nexus.sonatype.com/repository"),
                 new RepositoryRef("Akka Repo", "http://akka.io/repository")
         );
 

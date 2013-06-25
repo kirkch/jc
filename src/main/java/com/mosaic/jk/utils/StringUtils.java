@@ -8,6 +8,26 @@ import java.util.List;
  */
 public class StringUtils {
 
+    public static String capitalizeEachWord( String string ) {
+        StringBuilder buf = new StringBuilder(string.length());
+
+        boolean appendSeparator = false;
+        for ( String word : string.split(" ") ) {
+            if ( appendSeparator ) {
+                buf.append(" ");
+            } else {
+                appendSeparator = true;
+            }
+
+            buf.append( capitalize(word) );
+        }
+
+        return buf.toString();
+    }
+
+    private static String capitalize(String word) {
+        return uppercaseCamelcasedToken(word);
+    }
 
     public static List<String> tokeniseCamelCasedString( String s ) {
         List<String> list          = new ArrayList<String>();
@@ -117,4 +137,5 @@ public class StringUtils {
 
         return a.equals(b);
     }
+
 }

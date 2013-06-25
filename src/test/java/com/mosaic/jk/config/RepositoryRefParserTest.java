@@ -16,6 +16,7 @@ public class RepositoryRefParserTest {
         String url = "http://myrepo.mycompany.com/repository";
         RepositoryRef ref = parser.parseRef(url);
 
+        assertEquals( "myrepo.mycompany.com Repository", ref.getName() );
         assertEquals( url, ref.getUrl() );
     }
 
@@ -25,6 +26,7 @@ public class RepositoryRefParserTest {
         RepositoryRef ref = parser.parseRef(url);
 
         assertEquals( "http://myrepo.mycompany.com/repository", ref.getUrl() );
+        assertEquals( "myrepo.mycompany.com Repository", ref.getName() );
     }
 
     @Test

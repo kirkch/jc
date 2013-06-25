@@ -1,9 +1,6 @@
 package com.mosaic.jk.maven;
 
-import com.mosaic.jk.config.Config;
-import com.mosaic.jk.config.Dependency;
-import com.mosaic.jk.config.DependencyScope;
-import com.mosaic.jk.config.ModuleConfig;
+import com.mosaic.jk.config.*;
 import com.mosaic.jk.env.Environment;
 import com.mosaic.jk.io.XMLWriter;
 import com.mosaic.jk.utils.FileUtils;
@@ -42,9 +39,29 @@ public class POMWriter {
         printManifestPlugin( config );
 //        printMavenBuilderHelperPlugin( config );
         endPluginsBlock();
+        printRepositories( config );
         printDependencies( config );
 
         endPOM();
+    }
+
+    private void printRepositories(Config config) {
+        if ( config.downloadRepositories.isEmpty() ) {
+            return;
+        }
+
+        out.printStartTag( "repositories" );
+        for ( RepositoryRef repo : config.downloadRepositories ) {
+            out.printStartTag("repository");
+            out.printOnelineTag( "id", repo.getName().toLowerCase().replaceAll(" ","-").replaceAll("\\.","-") );
+            out.printOnelineTag( "name", repo.getName() );
+            out.printOnelineTag( "url", repo.getUrl() );
+            out.printStartTag("snapshots");
+            out.printOnelineTag( "enabled", "false" ); // todo supportSnapshots meta flag
+            out.printEndTag("snapshots");
+            out.printEndTag("repository");
+        }
+        out.printEndTag( "repositories" );
     }
 
     private void startPOM( String groupId, String artifactId, String version ) {

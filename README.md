@@ -117,12 +117,14 @@ JC stores custom configuration under a directory called 'project'.
     mkdir project
     echo 'com.netflix.rxjava:rxjava-core:0.8.4' >> project/dependencies
 
-JC will now use Ivy to lookup the specified jar files, and it will not include its default of JUnit and Mockito.
+JC will now use Ivy to lookup the specified jar files, and it will not include
+its default of JUnit and Mockito.
 
 
 ## Example 5: Declaring dependencies, full fat
 
-The format of the dependencies file is as follows
+To declare dependencies, create a file called 'project/dependencies'. The format
+of the dependencies file is as follows
 
 
     globalDependencies
@@ -137,8 +139,9 @@ Where the dependencies are either paths to the base module directory or referenc
 
     mavenGroupId:mavenArtifactId:version  <compile|test|runtime|provided>
 
-The scope of the dependency defaults to 'compile', and thus can be left out.  If it is included then the angle brackets
-are required.  Thus a more fuller example would be:
+The scope of the dependency defaults to 'compile', and thus can be left out.
+If it is included then the angle brackets are required.  Thus a more fuller
+example would be:
 
 
     junit:junit:4.8.2         <test>
@@ -151,8 +154,22 @@ are required.  Thus a more fuller example would be:
     [server]
       client
 
-The format does ignore whitespace, thus the declarations can be lined up to help readability.
+The format does ignore whitespace, thus the declarations can be lined up to help
+readability.
 
 
+## Example 6: Declaring download repositories
 
+jc supports the same repositories as Maven.  To add a new repository to
+download artifacts from, list them in 'project/repositories'.
+
+Example file:
+
+                         http://nexus.sonatype.com/repository
+    My Release Repo:     http://nexus.mycompany.com/repository
+    Akka Repo:           http://akka.io/repository
+
+The format of the file is:
+
+    OptionalRepoName: RepositoryURL
 
