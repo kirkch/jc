@@ -20,9 +20,13 @@ TODO support comments in dependencies file
 
 auto update dependencies:
 
-jc dependency-tree
+jc dependency-tree      or write dependency tree every run to target/dependency-tree
 jc dependency-update
-jc dependency-check
+jc dependency-check     or async check in the background and issue warning when changed;
+                        flag to write updates on next run?
+
+
+
 
 
 Cloud Build

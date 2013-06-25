@@ -1,26 +1,29 @@
-package com.mosaic.jk.config;
+package com.mosaic.jk.config.zeroconfig;
 
 import com.mosaic.jk.TestUtils;
+import com.mosaic.jk.config.*;
 import com.mosaic.jk.env.Environment;
 import com.mosaic.jk.env.EnvironmentFake;
 import org.junit.Test;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.Collections;
 
 import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 /**
- *
+ * Given zero config in a project with a single implicit/unnamed module.
  */
-public class ConfigLoaderTests_singleSourceAndTestDirectories {
+public class ConfigLoaderTests_defaultCases {
 
     private Environment  env                  = new EnvironmentFake();
     private ConfigLoader configLoader         = new ConfigLoader(env);
-    private File         zeroConfigProjectDir = TestUtils.examplesDir( "zeroConfig/singleSourceAndTestDirectories" );
-    private Config       config               = configLoader.loadConfigFor( zeroConfigProjectDir );
+    private File         zeroConfigProjectDir = TestUtils.examplesDir("zeroConfig/zeroConfig");
+    private Config config               = configLoader.loadConfigFor( zeroConfigProjectDir );
 
 
     @Test
@@ -30,12 +33,22 @@ public class ConfigLoaderTests_singleSourceAndTestDirectories {
 
     @Test
     public void defaultProjectName() {
-        assertEquals( "Single Source And Test Directories", config.projectName );
+        assertEquals( "Zero Config", config.projectName );
     }
 
     @Test
     public void defaultVersion() {
         assertEquals( "0.0.1", config.versionNumber );
+    }
+
+    @Test
+    public void defaultJavaVersion() {
+        assertEquals( "1.6", config.javaVersion );
+    }
+
+    @Test
+    public void expectDestinationDirectory() {
+        assertEquals( new File(config.rootDirectory, "target/classes"), config.destinationDirectory );
     }
 
     @Test
@@ -47,14 +60,14 @@ public class ConfigLoaderTests_singleSourceAndTestDirectories {
     public void expectImplicitModule_thatIsNoModuleName() {
         ModuleConfig module = config.modules.get(0);
 
-        assertNull( module.moduleNameNbl );
+        assertNull(module.moduleNameNbl);
     }
 
     @Test
-    public void expectNoMainClass() {
+    public void expectOneMainClass() {
         ModuleConfig module = config.modules.get(0);
 
-        assertArrayEquals( new String[] {}, module.mainFQNs );
+        assertArrayEquals(new String[]{"com.s5.zeroconfig.Main"}, module.mainFQNs);
     }
 
     @Test
@@ -66,18 +79,27 @@ public class ConfigLoaderTests_singleSourceAndTestDirectories {
     }
 
     @Test
-    public void expectTestSourceDirectories() {
-        ModuleConfig module  = config.modules.get(0);
-        File         testDir = new File(zeroConfigProjectDir, "tests");
+    public void expectNoTestSourceDirectories() {
+        ModuleConfig module = config.modules.get(0);
 
-        assertArrayEquals( new File[] {testDir}, module.testDirectories );
+        assertArrayEquals( new File[] {}, module.testDirectories );
     }
 
     @Test
     public void expectSingleJar() {
         ModuleConfig module = config.modules.get(0);
 
-        assertEquals( "JAR", module.packageType );
+        assertEquals("JAR", module.packageType);
+    }
+
+    @Test
+    public void expectNoRepositoryURLs() {
+        assertEquals(Collections.EMPTY_LIST, config.downloadRepositories );
+    }
+
+    @Test
+    public void expectSupportsSnapshots_false() {
+        assertFalse(config.supportsSnapshots);
     }
 
     @Test
@@ -88,7 +110,7 @@ public class ConfigLoaderTests_singleSourceAndTestDirectories {
         Dependency mockito = new Dependency( DependencyScope.TEST, "org.mockito", "mockito-all", "1.9.5" );
 
 
-        assertEquals( Arrays.asList( junit, mockito ), module.dependencies );
+        assertEquals( Arrays.asList(junit,mockito), module.dependencies );
     }
 
 }

@@ -1,6 +1,7 @@
-package com.mosaic.jk.config;
+package com.mosaic.jk.config.dependencies;
 
 import com.mosaic.jk.TestUtils;
+import com.mosaic.jk.config.*;
 import com.mosaic.jk.env.Environment;
 import com.mosaic.jk.env.EnvironmentFake;
 import com.mosaic.jk.utils.Function1;
@@ -24,7 +25,7 @@ public class ConfigLoaderTests_customDependencies {
     private Environment env           = new EnvironmentFake();
     private ConfigLoader configLoader = new ConfigLoader(env);
     private File zeroConfigProjectDir = TestUtils.examplesDir("dependencies/multipleModulesAndDependencies");
-    private Config       config       = configLoader.loadConfigFor( zeroConfigProjectDir );
+    private Config config       = configLoader.loadConfigFor( zeroConfigProjectDir );
 
 
 

@@ -20,6 +20,9 @@ public class Config {
     public File destinationDirectory;
 
 
+    public boolean supportsSnapshots;
+
+
     public List<ModuleConfig>  modules;
 
     public List<RepositoryRef> downloadRepositories;

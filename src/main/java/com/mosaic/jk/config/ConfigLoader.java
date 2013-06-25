@@ -43,7 +43,9 @@ public class ConfigLoader {
 
 
             Properties metaConfig = project.loadPropertiesFile( "meta" );
-            config.javaVersion = metaConfig.getProperty( "java", "1.6" );
+            
+            config.javaVersion       = metaConfig.getProperty( "java", "1.6" );
+            config.supportsSnapshots = Boolean.parseBoolean(metaConfig.getProperty("supportSnapshots","false"));
         } catch ( IOException e ) {
             throw new RuntimeException(e);
         }
