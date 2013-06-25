@@ -57,7 +57,7 @@ public class POMWriter {
             out.printOnelineTag( "name", repo.getName() );
             out.printOnelineTag( "url", repo.getUrl() );
             out.printStartTag("snapshots");
-            out.printOnelineTag( "enabled", "false" ); // todo supportSnapshots meta flag
+            out.printOnelineTag( "enabled", config.supportsSnapshots );
             out.printEndTag("snapshots");
             out.printEndTag("repository");
         }

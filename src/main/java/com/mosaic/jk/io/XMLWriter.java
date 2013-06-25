@@ -80,6 +80,10 @@ public class XMLWriter {
         }
     }
 
+    public void printOnelineTag( String tagName, boolean flag ) {
+        printOnelineTag( tagName, Boolean.toString(flag) );
+    }
+
     public void printOnelineTag( String tagName, String bodyText ) {
         printIndent();
 
