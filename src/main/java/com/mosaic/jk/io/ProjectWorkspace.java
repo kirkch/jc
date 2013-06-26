@@ -20,7 +20,8 @@ public interface ProjectWorkspace {
 
     public void loadIniFile( String dependencies, IniFileDelegate iniFileDelegate ) throws IOException;
 
-    public Properties loadPropertiesFile(String name);
+    public Properties loadPropertiesFile(String fileName);
+    public void writePropertiesFile(String fileName, Properties properties);
 
     public List<RepositoryRef> loadRepositories();
 }

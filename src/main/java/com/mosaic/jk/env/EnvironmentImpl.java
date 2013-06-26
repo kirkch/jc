@@ -11,11 +11,13 @@ public class EnvironmentImpl implements Environment {
 
     private long startMillis;
 
+
+
     @Override
     public void appStarted() {
         startMillis = System.currentTimeMillis();
 
-        out.println( "JK");
+        out.println( "JC");
     }
 
     @Override

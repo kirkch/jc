@@ -149,6 +149,27 @@ idea: keep last used timestamp on dependencies
       ttl changable by tags (eg release very long, ck frequent)
 
 
+Version number
+------
+
+project/buildstats
+
+each build, write in
+
+
+buildcount_username=10
+
+build_duration_clean=0.5,0.7,0.2    #up to ten
+build_duration_pomwriter=
+build_duration_compile=
+build_duration_package=
+build_duration_test=
+
+build_testcount=102
+build_javacount=80
+build_scalacount=80
+
+
 Packaging
 ----
 

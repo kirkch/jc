@@ -50,6 +50,7 @@ public class POMWriter {
             return;
         }
 
+        out.println();
         out.printStartTag( "repositories" );
         for ( RepositoryRef repo : config.downloadRepositories ) {
             out.printStartTag("repository");
@@ -222,6 +223,7 @@ public class POMWriter {
 
 
     private void startPluginsBlock( Config config) {
+        out.println();
         out.printStartTag("build" );
 
         out.printOnelineTag( "sourceDirectory", "src" );
@@ -317,6 +319,7 @@ public class POMWriter {
 
 
     private void printDependencies( Config config ) {
+        out.println();
         out.printStartTag( "dependencies" );
 
         Set<Dependency> dependenciesSoFar = new HashSet<Dependency>();

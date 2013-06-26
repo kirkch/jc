@@ -73,16 +73,29 @@ public class ProjectWorkspaceImpl implements ProjectWorkspace {
         }
     }
 
-    public Properties loadPropertiesFile( String name ) {
+    public Properties loadPropertiesFile( String fileName) {
         Properties props = new Properties();
+        File file = new File(projectDir, fileName);
+
+        if ( !file.exists() ) {
+            return props;
+        }
 
         try {
-            props.load( new FileInputStream(new File(projectDir,name)) );
+            props.load( new FileInputStream(file) );
         } catch (IOException e) {
-
+            throw new RuntimeException(e);
         }
 
         return props;
+    }
+
+    public void writePropertiesFile(String fileName, Properties properties) {
+        try {
+            properties.store( new FileWriter(new File(projectDir,fileName)), "");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public List<RepositoryRef> loadRepositories() {
