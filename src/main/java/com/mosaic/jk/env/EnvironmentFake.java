@@ -2,6 +2,7 @@ package com.mosaic.jk.env;
 
 import com.mosaic.jk.config.Config;
 import com.mosaic.jk.io.ProjectWorkspace;
+import com.mosaic.jk.utils.VoidFunction0;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,9 +40,12 @@ public class EnvironmentFake implements Environment {
         recordedEvents.add( new Event("WARN: "+ msg) );
     }
 
-    @Override
     public ProjectWorkspace getProjectWorkspace() {
         return null;
+    }
+
+    public void demarcateJob( String jobName, VoidFunction0 job ) {
+
     }
 
     public static class Event {

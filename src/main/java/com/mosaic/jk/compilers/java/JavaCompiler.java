@@ -6,6 +6,7 @@ import com.mosaic.jk.config.ModuleConfig;
 import com.mosaic.jk.config.RepositoryRef;
 import com.mosaic.jk.env.Environment;
 import com.mosaic.jk.utils.ListUtils;
+import com.mosaic.jk.utils.VoidFunction0;
 
 import javax.tools.*;
 import java.io.*;
@@ -19,28 +20,32 @@ import java.util.*;
 @SuppressWarnings({"ResultOfMethodCallIgnored", "unchecked"})
 public class JavaCompiler {
 
-    public void compile( Environment env, Config config ) {
-        List<File>      sourceDirectories = new ArrayList<File>();
-        Set<Dependency> dependencies      = new HashSet<Dependency>();
+    public void compile( final Environment env, final Config config ) {
+        VoidFunction0 compileJavaJob = new VoidFunction0() {
+            public void invoke() {
+                List<File>      sourceDirectories = new ArrayList<File>();
+                Set<Dependency> dependencies      = new HashSet<Dependency>();
 
-        for ( ModuleConfig module : config.modules ) {
-            Collections.addAll( sourceDirectories, module.sourceDirectories );
+                for ( ModuleConfig module : config.modules ) {
+                    Collections.addAll( sourceDirectories, module.sourceDirectories );
 
-            dependencies.addAll( module.dependencies );
-        }
+                    dependencies.addAll( module.dependencies );
+                }
 
-        List<String> resolvedExternalDependencies = resolveDependencies( config.downloadRepositories, dependencies );
-        compile( sourceDirectories, config.destinationDirectory, resolvedExternalDependencies );
+                List<String> resolvedExternalDependencies = resolveDependencies( config.downloadRepositories, dependencies );
+                compile( sourceDirectories, config.destinationDirectory, resolvedExternalDependencies );
 
-        generateManifest( env, config, resolvedExternalDependencies );
+                generateManifest( env, config, resolvedExternalDependencies );
+            }
+        };
+
+        env.demarcateJob("compilejava", compileJavaJob);
     }
 
     private List<String> resolveDependencies( List<RepositoryRef> downloadRepositories, Set<Dependency> dependencies ) {
         List<String> resolvedDependencies = new ArrayList<String>( dependencies.size() );
 
         IvyArtifactResolver resolver = new IvyArtifactResolver();
-System.out.println("resolver = " + resolver);
-System.out.println("downloadRepositories = " + downloadRepositories);
         resolver.addRepositories( downloadRepositories );
 
         for ( Dependency dependency : dependencies ) {
@@ -136,17 +141,14 @@ System.out.println("downloadRepositories = " + downloadRepositories);
             javaFiles.addAll(scanForAllJavaFiles(sourceDirectory));
         }
 
+
+
         javax.tools.JavaCompiler.CompilationTask task = compiler.getTask( null, fileManager, diagnosticListener, compilerCommandLineArgs, null, javaFiles );
 
-        long startNanos = System.nanoTime();
-
         boolean success = task.call();
-
-        long endNanos = System.nanoTime();
-
-        double durationMillis = (endNanos-startNanos)/1000000.0;
-
-        System.out.println( "compilation durationMillis = " + durationMillis + " " + success);
+        if ( !success ) {
+            throw new IllegalStateException("compilation failed");
+        }
     }
 
 //    private String locateDependency( Dependency dependency ) {

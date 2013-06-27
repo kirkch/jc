@@ -4,6 +4,7 @@ import com.mosaic.jk.config.*;
 import com.mosaic.jk.env.Environment;
 import com.mosaic.jk.io.XMLWriter;
 import com.mosaic.jk.utils.FileUtils;
+import com.mosaic.jk.utils.VoidFunction0;
 
 import java.io.File;
 import java.io.Writer;
@@ -26,23 +27,29 @@ public class POMWriter {
     }
 
 
-    public void writeToPOM( Config config ) {
-        String mavenArtifactName  = config.projectName.replaceAll( " ", "-" ).toLowerCase();
-        String mavenVersionNumber = config.versionNumber + "-SNAPSHOT";
+    public void writeToPOM( final Config config ) {
+        VoidFunction0 writePomJob = new VoidFunction0() {
+            public void invoke() {
+                String mavenArtifactName  = config.projectName.replaceAll( " ", "-" ).toLowerCase();
+                String mavenVersionNumber = config.versionNumber + "-SNAPSHOT";
 
-        env.info( "Maven", "Generating POM file" );
+                env.info( "Maven", "Generating POM file" );
 
-        startPOM( config.groupId, mavenArtifactName, mavenVersionNumber );
+                startPOM( config.groupId, mavenArtifactName, mavenVersionNumber );
 
-        startPluginsBlock( config );
-        printSureFireTestPlugin();
-        printManifestPlugin( config );
+                startPluginsBlock( config );
+                printSureFireTestPlugin();
+                printManifestPlugin( config );
 //        printMavenBuilderHelperPlugin( config );
-        endPluginsBlock();
-        printRepositories( config );
-        printDependencies( config );
+                endPluginsBlock();
+                printRepositories( config );
+                printDependencies( config );
 
-        endPOM();
+                endPOM();
+            }
+        };
+
+        env.demarcateJob( "pomwriter", writePomJob );
     }
 
     private void printRepositories(Config config) {

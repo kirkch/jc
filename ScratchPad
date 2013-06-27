@@ -130,6 +130,8 @@ in ~/.jc/{project}/buildnumber.  Thus number is not transferred between machines
 A custom number can be passed in via -DbuildNumber=X.  Useful for integrating with builds, which manage their
 own build number.
 
+-DbuildName=release
+
 
 Q: How to manage dependency clashes
 Q: How to know when new versions exist

@@ -4,6 +4,7 @@ import com.mosaic.jk.config.Config;
 import com.mosaic.jk.config.ConfigLoader;
 import com.mosaic.jk.io.ProjectWorkspace;
 import com.mosaic.jk.io.ProjectWorkspaceImpl;
+import com.mosaic.jk.utils.VoidFunction0;
 
 import java.io.File;
 import java.io.PrintStream;
@@ -73,6 +74,18 @@ public class EnvironmentImpl implements Environment {
 
     public void error( String msg ) {
         err.println( "ERROR: " + msg );
+    }
+
+    public void demarcateJob( String jobName, VoidFunction0 job ) {
+        long startMillis = System.currentTimeMillis();
+
+        try {
+            job.invoke();
+        } finally {
+            long durationMillis = System.currentTimeMillis() - startMillis;
+
+            buildStats.appendDuration(jobName, durationMillis);
+        }
     }
 
     /**
