@@ -15,6 +15,7 @@ public class EnvironmentImpl implements Environment {
 
     private ProjectWorkspace workspace;
     private Config           config;
+    private BuildStats       buildStats;
 
     private PrintStream out = System.out;
     private PrintStream err = System.err;
@@ -24,7 +25,8 @@ public class EnvironmentImpl implements Environment {
 
 
     public EnvironmentImpl(File rootDirectory) {
-        this.workspace = new ProjectWorkspaceImpl(rootDirectory);
+        this.workspace  = new ProjectWorkspaceImpl(rootDirectory);
+        this.buildStats = new BuildStats(workspace);
     }
 
 
@@ -39,12 +41,18 @@ public class EnvironmentImpl implements Environment {
     public void appStarted() {
         startMillis = System.currentTimeMillis();
 
+        buildStats.loadStats();
+        buildStats.incrementBuildCount(getEnvironmentalBuildName());
+
         out.println( "JC");
     }
 
     public void appFinished() {
         long endMillis      = System.currentTimeMillis();
         long durationMillis = endMillis - startMillis;
+
+        buildStats.appendDuration("total", durationMillis);
+        buildStats.saveStats();
 
         out.println( String.format("Total duration = %.2fs",durationMillis/1000.0) );
         out.println( "." );
@@ -58,13 +66,24 @@ public class EnvironmentImpl implements Environment {
         err.println( "WARN: " + msg );
     }
 
-
     public ProjectWorkspace getProjectWorkspace() {
         return workspace;
     }
 
+
     public void error( String msg ) {
         err.println( "ERROR: " + msg );
+    }
+
+    /**
+     * Defaults the build name to the logged in user's account name. Can be
+     * overridden with -DbuildName=release
+     */
+    private String getEnvironmentalBuildName() {
+        String userName     = System.getProperty("user.name");
+        String envBuildName = System.getProperty("buildName", userName);
+
+        return envBuildName;
     }
 
 }

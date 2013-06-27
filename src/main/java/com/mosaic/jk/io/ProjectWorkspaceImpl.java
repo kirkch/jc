@@ -96,6 +96,7 @@ public class ProjectWorkspaceImpl implements ProjectWorkspace {
 
     public void writePropertiesFile(String fileName, Properties properties) {
         try {
+            projectDir.mkdirs();
             properties.store( new FileWriter(new File(projectDir,fileName)), "");
         } catch (IOException e) {
             throw new RuntimeException(e);

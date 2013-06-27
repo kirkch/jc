@@ -26,7 +26,6 @@ public class ConfigLoaderTests_customDependencies extends BaseConfigTestCase {
         super("dependencies/multipleModulesAndDependencies");
     }
 
-
     @Test
     public void expectTwoModules() {
         List<ModuleConfig> modules = config.modules;
