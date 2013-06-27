@@ -25,7 +25,11 @@ public class FileUtils {
     }
 
     public static File getWorkingDirectory() {
-        return new File( System.getProperty("user.dir") );
+        try {
+            return new File( System.getProperty("user.dir") ).getCanonicalFile();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static File[] allChildDirectories( File directory ) {

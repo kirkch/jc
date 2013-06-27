@@ -34,9 +34,7 @@ public class Main_InvalidConfigTest {
         main.generateMavenPOM( out );
 
         List<EnvironmentFake.Event> expectedEvents = Arrays.asList(
-            new Event("started"),
-            new Event("ERROR: specified root directory '"+missingDirectory.getPath()+"' does not exist"),
-            new Event("finished")
+            new Event("ERROR: specified root directory '"+missingDirectory.getPath()+"' does not exist")
         );
 
         assertEquals( expectedEvents, env.recordedEvents );

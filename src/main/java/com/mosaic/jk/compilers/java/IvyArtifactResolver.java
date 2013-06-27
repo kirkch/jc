@@ -10,6 +10,7 @@ import org.apache.ivy.core.report.ResolveReport;
 import org.apache.ivy.core.resolve.ResolveOptions;
 import org.apache.ivy.core.settings.IvySettings;
 import org.apache.ivy.plugins.parser.xml.XmlModuleDescriptorWriter;
+import org.apache.ivy.plugins.resolver.ChainResolver;
 import org.apache.ivy.plugins.resolver.URLResolver;
 
 import java.io.File;
@@ -42,6 +43,7 @@ public class IvyArtifactResolver {
         resolver.addArtifactPattern( repo.getUrl() + "/[organisation]/[module]/[revision]/[artifact](-[revision]).[ext]" );
 
         ivySettings.addResolver(resolver);
+        chainedResolver.add(resolver);
     }
 
     public File resolveArtifact( Dependency dependency ) {
@@ -93,6 +95,8 @@ public class IvyArtifactResolver {
         }
     }
 
+    ChainResolver chainedResolver = new ChainResolver();
+
     private IvySettings createDefaultIvySettings() {
         IvySettings ivySettings = new IvySettings();
 
@@ -101,8 +105,15 @@ public class IvyArtifactResolver {
         resolver.setName("central");
         resolver.addArtifactPattern( "http://repo1.maven.org/maven2/[organisation]/[module]/[revision]/[artifact](-[revision]).[ext]" );
 
+
+        chainedResolver.setName("chained");
+        chainedResolver.setReturnFirst(true);
+        chainedResolver.add(resolver);
+        chainedResolver.setName("chained");
+
         ivySettings.addResolver(resolver);
-        ivySettings.setDefaultResolver(resolver.getName());
+        ivySettings.addResolver(chainedResolver);
+        ivySettings.setDefaultResolver("chained");
 
         return ivySettings;
     }

@@ -18,30 +18,24 @@ import java.io.IOException;
 public class Main {
 
     public static void main( String[] args ) throws IOException {
-        long startMillis = System.currentTimeMillis();
-
         Environment env = new EnvironmentImpl();
-        File rootDirectory = getRootDirectoryFromArgs( args );
 
+        env.appStarted();
 
-        Main   main   = new Main(env);
-        main.setRootDirectory( rootDirectory.getCanonicalFile() );
+        try {
+            File   rootDirectory = getRootDirectoryFromArgs( args );
+            Config config        = loadConfig(env, rootDirectory);
 
-        if ( main.validateConfig() ) {
-            POMWriter out = new POMWriter( env, new FileWriter(new File(rootDirectory,"pom.xml")) );
-            main.generateMavenPOM( out );
+            if ( validateConfig(env,rootDirectory) ) {
+                POMWriter out = new POMWriter( env, new FileWriter(new File(rootDirectory,"pom.xml")) );
+                out.writeToPOM( config );
 
-            main.compile();
+                JavaCompiler compiler = new JavaCompiler();
+                compiler.compile(env, config);
+            }
+        } finally {
+            env.appFinished();
         }
-
-        long durationMillis = System.currentTimeMillis() - startMillis;
-        System.out.println( String.format("Total duration %.2fs", durationMillis/1000.0) );
-    }
-
-    private void compile() {
-        JavaCompiler compiler = new JavaCompiler();
-
-        compiler.compile(env, config);
     }
 
     private static Config loadConfig( Environment env, File rootDirectory ) {
@@ -56,43 +50,13 @@ public class Main {
         return FileUtils.getWorkingDirectory();
     }
 
-
-
-    private File        rootDirectory;
-    private Environment env;
-    private Config      config;
-
-    public Main(Environment env) {
-        this.env = env;
-    }
-
-    public void setRootDirectory( File rootDirectory ) {
-        this.rootDirectory = rootDirectory;
-
-        this.config = loadConfig(env, rootDirectory);
-    }
-
-    public boolean validateConfig() {
+    private static boolean validateConfig(Environment env, File rootDirectory) {
         if ( !rootDirectory.exists() ) {
             env.error( "specified root directory '"+rootDirectory.getPath()+"' does not exist" );
             return false;
         }
 
         return true;
-    }
-
-    public void generateMavenPOM( POMWriter out ) {
-        env.appStarted();
-
-        try {
-            if ( !validateConfig() ) {
-                return;
-            }
-
-            out.writeToPOM( config );
-        } finally {
-            env.appFinished();
-        }
     }
 
 }

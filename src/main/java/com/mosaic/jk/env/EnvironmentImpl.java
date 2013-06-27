@@ -22,10 +22,10 @@ public class EnvironmentImpl implements Environment {
 
     @Override
     public void appFinished() {
-        long endMillis = System.currentTimeMillis();
+        long endMillis      = System.currentTimeMillis();
         long durationMillis = endMillis - startMillis;
 
-        out.println( String.format("duration = %.2fs",durationMillis/1000.0) );
+        out.println( String.format("Total duration = %.2fs",durationMillis/1000.0) );
         out.println( "." );
     }
 

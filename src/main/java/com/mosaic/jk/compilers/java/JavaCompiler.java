@@ -39,6 +39,8 @@ public class JavaCompiler {
         List<String> resolvedDependencies = new ArrayList<String>( dependencies.size() );
 
         IvyArtifactResolver resolver = new IvyArtifactResolver();
+System.out.println("resolver = " + resolver);
+System.out.println("downloadRepositories = " + downloadRepositories);
         resolver.addRepositories( downloadRepositories );
 
         for ( Dependency dependency : dependencies ) {

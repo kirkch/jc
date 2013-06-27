@@ -4,8 +4,8 @@ package com.mosaic.jk.env;
  *
  */
 public interface Environment {
-    void appStarted();
 
+    void appStarted();
     void appFinished();
 
     void info( String stage, String msg );

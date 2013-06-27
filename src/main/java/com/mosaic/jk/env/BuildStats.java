@@ -19,6 +19,7 @@ build_duration_pomwriter=
 build_duration_compile=
 build_duration_package=
 build_duration_test=
+build_duration_total=
 
 test_count=102
 javafile_count=80

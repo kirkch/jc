@@ -12,7 +12,6 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -31,7 +30,7 @@ public class ConfigLoaderTests_standardRepositories {
         List<RepositoryRef> expectedRefs = Arrays.asList(
                 new RepositoryRef("My Release Repo", "http://nexus.mycompany.com/repository"),
                 new RepositoryRef("nexus.sonatype.com Repository", "http://nexus.sonatype.com/repository"),
-                new RepositoryRef("Akka Repo", "http://akka.io/repository")
+                new RepositoryRef("Akka Repo", "http://repo.akka.io/releases")
         );
 
         assertEquals(expectedRefs, config.downloadRepositories);
