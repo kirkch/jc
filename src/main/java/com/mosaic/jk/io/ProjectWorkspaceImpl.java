@@ -37,6 +37,10 @@ public class ProjectWorkspaceImpl implements ProjectWorkspace {
         this.repositoriesFile = new File(projectDir,"repositories");
     }
 
+    public File getRootProjectDirectory() {
+        return rootDir;
+    }
+
     public File[] scanForSourceDirectories() {
         File sourceDirectory = getSourceDirectory();
 

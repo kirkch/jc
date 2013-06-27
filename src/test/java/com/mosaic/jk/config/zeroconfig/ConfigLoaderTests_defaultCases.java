@@ -4,6 +4,7 @@ import com.mosaic.jk.TestUtils;
 import com.mosaic.jk.config.*;
 import com.mosaic.jk.env.Environment;
 import com.mosaic.jk.env.EnvironmentFake;
+import com.mosaic.jk.io.ProjectWorkspaceImpl;
 import org.junit.Test;
 
 import java.io.File;
@@ -23,7 +24,7 @@ public class ConfigLoaderTests_defaultCases {
     private Environment  env                  = new EnvironmentFake();
     private ConfigLoader configLoader         = new ConfigLoader(env);
     private File         zeroConfigProjectDir = TestUtils.examplesDir("zeroConfig/zeroConfig");
-    private Config config               = configLoader.loadConfigFor( zeroConfigProjectDir );
+    private Config       config               = configLoader.loadConfigFor( new ProjectWorkspaceImpl(zeroConfigProjectDir) );
 
 
     @Test

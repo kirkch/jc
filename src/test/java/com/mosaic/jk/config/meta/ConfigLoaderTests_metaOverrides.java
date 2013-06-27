@@ -5,6 +5,7 @@ import com.mosaic.jk.config.Config;
 import com.mosaic.jk.config.ConfigLoader;
 import com.mosaic.jk.env.Environment;
 import com.mosaic.jk.env.EnvironmentFake;
+import com.mosaic.jk.io.ProjectWorkspaceImpl;
 import org.junit.Test;
 
 import java.io.File;
@@ -16,10 +17,10 @@ import static org.junit.Assert.assertEquals;
  */
 public class ConfigLoaderTests_metaOverrides {
 
-    private Environment env                  = new EnvironmentFake();
+    private Environment  env                  = new EnvironmentFake();
     private ConfigLoader configLoader         = new ConfigLoader(env);
-    private File zeroConfigProjectDir = TestUtils.examplesDir("meta/all");
-    private Config config               = configLoader.loadConfigFor( zeroConfigProjectDir );
+    private File         zeroConfigProjectDir = TestUtils.examplesDir("meta/all");
+    private Config       config               = configLoader.loadConfigFor( new ProjectWorkspaceImpl(zeroConfigProjectDir) );
 
 
     @Test

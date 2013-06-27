@@ -4,6 +4,7 @@ import com.mosaic.jk.TestUtils;
 import com.mosaic.jk.config.*;
 import com.mosaic.jk.env.Environment;
 import com.mosaic.jk.env.EnvironmentFake;
+import com.mosaic.jk.io.ProjectWorkspaceImpl;
 import com.mosaic.jk.utils.Function1;
 import com.mosaic.jk.utils.ListUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -26,7 +27,7 @@ public class ConfigLoaderTests_multipleSources {
     private Environment  env                  = new EnvironmentFake();
     private ConfigLoader configLoader         = new ConfigLoader(env);
     private File         zeroConfigProjectDir = TestUtils.examplesDir( "zeroConfig/multipleSourcesZeroConfig" );
-    private Config config               = configLoader.loadConfigFor( zeroConfigProjectDir );
+    private Config config               = configLoader.loadConfigFor( new ProjectWorkspaceImpl(zeroConfigProjectDir) );
 
 
     @Test

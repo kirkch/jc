@@ -5,6 +5,8 @@ import com.mosaic.jk.config.Config;
 import com.mosaic.jk.config.ConfigLoader;
 import com.mosaic.jk.env.Environment;
 import com.mosaic.jk.env.EnvironmentImpl;
+import com.mosaic.jk.io.ProjectWorkspace;
+import com.mosaic.jk.io.ProjectWorkspaceImpl;
 import com.mosaic.jk.maven.POMWriter;
 import com.mosaic.jk.utils.FileUtils;
 
@@ -18,13 +20,13 @@ import java.io.IOException;
 public class Main {
 
     public static void main( String[] args ) throws IOException {
-        Environment env = new EnvironmentImpl();
+        File        rootDirectory = getRootDirectoryFromArgs( args );
+        Environment env           = new EnvironmentImpl();
 
         env.appStarted();
 
         try {
-            File   rootDirectory = getRootDirectoryFromArgs( args );
-            Config config        = loadConfig(env, rootDirectory);
+            Config config = loadConfig(env, rootDirectory);
 
             if ( validateConfig(env,rootDirectory) ) {
                 POMWriter out = new POMWriter( env, new FileWriter(new File(rootDirectory,"pom.xml")) );
@@ -39,7 +41,9 @@ public class Main {
     }
 
     private static Config loadConfig( Environment env, File rootDirectory ) {
-        return new ConfigLoader(env).loadConfigFor( rootDirectory );
+        ProjectWorkspace workspace = new ProjectWorkspaceImpl( rootDirectory );
+
+        return new ConfigLoader(env).loadConfigFor( workspace );
     }
 
     private static File getRootDirectoryFromArgs( String[] args ) {

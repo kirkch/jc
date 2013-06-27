@@ -12,6 +12,8 @@ import java.util.Properties;
  *
  */
 public interface ProjectWorkspace {
+    public File getRootProjectDirectory();
+
     public File[] scanForSourceDirectories();
 
     public File[] scanForTestDirectories( String moduleNameNbl );
@@ -19,8 +21,8 @@ public interface ProjectWorkspace {
     public boolean hasDependenciesFile();
 
     public void loadIniFile( String dependencies, IniFileDelegate iniFileDelegate ) throws IOException;
-
     public Properties loadPropertiesFile(String fileName);
+
     public void writePropertiesFile(String fileName, Properties properties);
 
     public List<RepositoryRef> loadRepositories();

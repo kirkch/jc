@@ -23,10 +23,9 @@ public class ConfigLoader {
     }
 
 
-    public Config loadConfigFor( File projectDirectory ) {
-        ProjectWorkspace project = new ProjectWorkspaceImpl( projectDirectory );
-
-        Config config = new Config();
+    public Config loadConfigFor( ProjectWorkspace project ) {
+        File   projectDirectory = project.getRootProjectDirectory();
+        Config config           = new Config();
 
         config.projectName          = fetchDefaultProjectName( projectDirectory );
         config.versionNumber        = fetchDefaultVersionNumber();
