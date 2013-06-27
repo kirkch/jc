@@ -49,7 +49,7 @@ public class POMWriter {
             }
         };
 
-        env.timeAndInvokeJob("pomwriter", writePomJob);
+        env.invokeAndTimeJob("pomwriter", writePomJob);
     }
 
     private void printRepositories(Config config) {

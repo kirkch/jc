@@ -2,6 +2,7 @@ package com.mosaic.jk.env;
 
 import com.mosaic.jk.config.Config;
 import com.mosaic.jk.io.ProjectWorkspace;
+import com.mosaic.jk.utils.Function0;
 import com.mosaic.jk.utils.VoidFunction0;
 
 import java.util.ArrayList;
@@ -41,8 +42,12 @@ public class EnvironmentFake implements Environment {
         return null;
     }
 
-    public void timeAndInvokeJob(String jobName, VoidFunction0 job) {
+    public void invokeAndTimeJob(String jobName, VoidFunction0 job) {
 
+    }
+
+    public <T> T invokeAndTimeJob(String jobName, Function0<T> job) {
+        return null;
     }
 
     public void setCount(String entityName, int count) {

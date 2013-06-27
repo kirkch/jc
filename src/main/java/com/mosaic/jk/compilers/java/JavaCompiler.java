@@ -5,6 +5,7 @@ import com.mosaic.jk.config.Dependency;
 import com.mosaic.jk.config.ModuleConfig;
 import com.mosaic.jk.config.RepositoryRef;
 import com.mosaic.jk.env.Environment;
+import com.mosaic.jk.utils.Function0;
 import com.mosaic.jk.utils.ListUtils;
 import com.mosaic.jk.utils.VoidFunction0;
 
@@ -24,18 +25,18 @@ public class JavaCompiler {
         VoidFunction0 compileJavaJob = new VoidFunction0() {
             public void invoke() {
                 Config          config          = env.fetchConfig();
-                List<JavaFile>  sourceJavaFiles = scanModulesForJavaSourceFiles(config.modules);
+                List<JavaFile>  sourceJavaFiles = scanModulesForJavaSourceFiles(env, config.modules);
                 List<String>    dependencies    = locateAndOptionallyDownloadDependencies(config);
 
-                env.setCount( "javafile", sourceJavaFiles.size() );
+                env.setCount("javafile", sourceJavaFiles.size());
 
-                compile( sourceJavaFiles, config.destinationDirectory, dependencies );
+                compile(sourceJavaFiles, config.destinationDirectory, dependencies);
 
                 generateManifest( env, config, dependencies );
             }
         };
 
-        env.timeAndInvokeJob("compilejava", compileJavaJob);
+        env.invokeAndTimeJob("compilejava", compileJavaJob);
     }
 
     private List<String> locateAndOptionallyDownloadDependencies(Config config) {
@@ -48,12 +49,12 @@ public class JavaCompiler {
         return resolveDependencies( config.downloadRepositories, dependencies );
     }
 
-    private List<JavaFile> scanModulesForJavaSourceFiles(List<ModuleConfig> modules) {
+    private List<JavaFile> scanModulesForJavaSourceFiles( Environment env, List<ModuleConfig> modules ) {
         List<JavaFile> sourceJavaFiles = new ArrayList<JavaFile>(100);
 
         for ( ModuleConfig module : modules ) {
             for ( File sourceDirectory : module.sourceDirectories ) {
-                sourceJavaFiles.addAll(scanForAllJavaFiles(sourceDirectory));
+                sourceJavaFiles.addAll(scanForAllJavaFiles(env, sourceDirectory));
             }
         }
 
@@ -187,45 +188,43 @@ public class JavaCompiler {
 //        }
 //    }
 
-    private static List<JavaFile> scanForAllJavaFiles( File root ) {
-        Stack<File> nextDirectoryStack = new Stack<File>();
-        List<JavaFile> javaFiles = new ArrayList<JavaFile>(100);
+    private static List<JavaFile> scanForAllJavaFiles( final Environment env, final File sourceFileRootDirectory ) {
+        Function0<List<JavaFile>> job = new Function0<List<JavaFile>>() {
+            public List<JavaFile> invoke() {
+                Stack<File> nextDirectoryStack = new Stack<File>();
+                List<JavaFile> javaFiles = new ArrayList<JavaFile>(100);
 
-        nextDirectoryStack.push( root );
+                nextDirectoryStack.push( sourceFileRootDirectory );
 
-        long startNanos = System.nanoTime();
+                while ( !nextDirectoryStack.isEmpty() ) {
+                    File f = nextDirectoryStack.pop();
 
-        while ( !nextDirectoryStack.isEmpty() ) {
-            File f = nextDirectoryStack.pop();
+                    File[] children = f.listFiles();
 
-            File[] children = f.listFiles();
+                    if ( children != null ) {
+                        for ( File c : children ) {
+                            if ( c.isHidden() ) {
+                                continue;
+                            }
 
-            if ( children != null ) {
-                for ( File c : children ) {
-                    if ( c.isHidden() ) {
-                        continue;
-                    }
-
-                    if ( c.isFile() && c.getName().endsWith(".java") ) {
-                        try {
-                            javaFiles.add( new JavaFile(c) );
-                        } catch (IOException e) {
-                            e.printStackTrace();
+                            if ( c.isFile() && c.getName().endsWith(".java") ) {
+                                try {
+                                    javaFiles.add( new JavaFile(c) );
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            } else if ( c.isDirectory()  ) {
+                                nextDirectoryStack.push(c);
+                            }
                         }
-                    } else if ( c.isDirectory()  ) {
-                        nextDirectoryStack.push(c);
                     }
                 }
+
+                return javaFiles;
             }
-        }
+        };
 
-        long endNanos = System.nanoTime();
-
-        double durationMillis = (endNanos-startNanos)/1000000.0;
-
-        System.out.println( "filescan durationMillis = " + durationMillis );
-
-        return javaFiles;
+        return env.invokeAndTimeJob("filescan", job);
     }
 
 }
