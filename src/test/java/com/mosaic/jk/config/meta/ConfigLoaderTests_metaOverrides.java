@@ -1,10 +1,12 @@
 package com.mosaic.jk.config.meta;
 
 import com.mosaic.jk.TestUtils;
+import com.mosaic.jk.config.BaseConfigTestCase;
 import com.mosaic.jk.config.Config;
 import com.mosaic.jk.config.ConfigLoader;
 import com.mosaic.jk.env.Environment;
 import com.mosaic.jk.env.EnvironmentFake;
+import com.mosaic.jk.env.EnvironmentImpl;
 import com.mosaic.jk.io.ProjectWorkspaceImpl;
 import org.junit.Test;
 
@@ -15,13 +17,11 @@ import static org.junit.Assert.assertEquals;
 /**
  *
  */
-public class ConfigLoaderTests_metaOverrides {
+public class ConfigLoaderTests_metaOverrides extends BaseConfigTestCase {
 
-    private Environment  env                  = new EnvironmentFake();
-    private ConfigLoader configLoader         = new ConfigLoader(env);
-    private File         zeroConfigProjectDir = TestUtils.examplesDir("meta/all");
-    private Config       config               = configLoader.loadConfigFor( new ProjectWorkspaceImpl(zeroConfigProjectDir) );
-
+    public ConfigLoaderTests_metaOverrides() {
+        super("meta/all");
+    }
 
     @Test
     public void defaultJavaVersion() {

@@ -19,12 +19,11 @@ import static org.junit.Assert.assertFalse;
 /**
  * Given zero config in a project with a single implicit/unnamed module.
  */
-public class ConfigLoaderTests_defaultCases {
+public class ConfigLoaderTests_defaultCases extends BaseConfigTestCase {
 
-    private Environment  env                  = new EnvironmentFake();
-    private ConfigLoader configLoader         = new ConfigLoader(env);
-    private File         zeroConfigProjectDir = TestUtils.examplesDir("zeroConfig/zeroConfig");
-    private Config       config               = configLoader.loadConfigFor( new ProjectWorkspaceImpl(zeroConfigProjectDir) );
+    public ConfigLoaderTests_defaultCases() {
+        super("zeroConfig/zeroConfig");
+    }
 
 
     @Test

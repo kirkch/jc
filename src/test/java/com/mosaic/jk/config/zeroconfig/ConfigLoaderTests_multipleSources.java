@@ -22,12 +22,11 @@ import static org.junit.Assert.assertEquals;
 /**
  *
  */
-public class ConfigLoaderTests_multipleSources {
+public class ConfigLoaderTests_multipleSources extends BaseConfigTestCase {
 
-    private Environment  env                  = new EnvironmentFake();
-    private ConfigLoader configLoader         = new ConfigLoader(env);
-    private File         zeroConfigProjectDir = TestUtils.examplesDir( "zeroConfig/multipleSourcesZeroConfig" );
-    private Config config               = configLoader.loadConfigFor( new ProjectWorkspaceImpl(zeroConfigProjectDir) );
+    public ConfigLoaderTests_multipleSources() {
+        super("zeroConfig/multipleSourcesZeroConfig");
+    }
 
 
     @Test

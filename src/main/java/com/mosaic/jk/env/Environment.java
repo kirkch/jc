@@ -1,9 +1,14 @@
 package com.mosaic.jk.env;
 
+import com.mosaic.jk.config.Config;
+import com.mosaic.jk.io.ProjectWorkspace;
+
 /**
  *
  */
 public interface Environment {
+
+    Config fetchConfig();
 
     void appStarted();
     void appFinished();
@@ -13,4 +18,5 @@ public interface Environment {
 
     void warn( String msg );
 
+    ProjectWorkspace getProjectWorkspace();
 }

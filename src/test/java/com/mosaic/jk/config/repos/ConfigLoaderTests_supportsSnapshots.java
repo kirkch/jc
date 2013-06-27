@@ -1,10 +1,12 @@
 package com.mosaic.jk.config.repos;
 
 import com.mosaic.jk.TestUtils;
+import com.mosaic.jk.config.BaseConfigTestCase;
 import com.mosaic.jk.config.Config;
 import com.mosaic.jk.config.ConfigLoader;
 import com.mosaic.jk.env.Environment;
 import com.mosaic.jk.env.EnvironmentFake;
+import com.mosaic.jk.env.EnvironmentImpl;
 import com.mosaic.jk.io.ProjectWorkspaceImpl;
 import org.junit.Test;
 
@@ -15,12 +17,11 @@ import static org.junit.Assert.assertTrue;
 /**
  *
  */
-public class ConfigLoaderTests_supportsSnapshots {
+public class ConfigLoaderTests_supportsSnapshots extends BaseConfigTestCase {
 
-    private Environment  env          = new EnvironmentFake();
-    private ConfigLoader configLoader = new ConfigLoader(env);
-    private File         projectDir   = TestUtils.examplesDir("repos/supportSnapshots");
-    private Config       config       = configLoader.loadConfigFor(new ProjectWorkspaceImpl(projectDir));
+    public ConfigLoaderTests_supportsSnapshots() {
+        super("repos/supportSnapshots");
+    }
 
 
     @Test

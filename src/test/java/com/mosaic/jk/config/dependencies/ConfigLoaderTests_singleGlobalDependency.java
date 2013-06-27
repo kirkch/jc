@@ -15,11 +15,11 @@ import static org.junit.Assert.assertEquals;
 /**
  *
  */
-public class ConfigLoaderTests_singleGlobalDependency {
-    private Environment  env                  = new EnvironmentFake();
-    private ConfigLoader configLoader         = new ConfigLoader(env);
-    private File         zeroConfigProjectDir = TestUtils.examplesDir( "dependencies/globalMavenDependency" );
-    private Config config               = configLoader.loadConfigFor( new ProjectWorkspaceImpl(zeroConfigProjectDir) );
+public class ConfigLoaderTests_singleGlobalDependency extends BaseConfigTestCase {
+
+    public ConfigLoaderTests_singleGlobalDependency() {
+        super("dependencies/globalMavenDependency");
+    }
 
 
     @Test

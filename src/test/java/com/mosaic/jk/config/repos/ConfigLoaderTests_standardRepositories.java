@@ -1,6 +1,7 @@
 package com.mosaic.jk.config.repos;
 
 import com.mosaic.jk.TestUtils;
+import com.mosaic.jk.config.BaseConfigTestCase;
 import com.mosaic.jk.config.Config;
 import com.mosaic.jk.config.ConfigLoader;
 import com.mosaic.jk.config.RepositoryRef;
@@ -18,12 +19,11 @@ import static org.junit.Assert.assertEquals;
 /**
  *
  */
-public class ConfigLoaderTests_standardRepositories {
+public class ConfigLoaderTests_standardRepositories extends BaseConfigTestCase {
 
-    private Environment  env          = new EnvironmentFake();
-    private ConfigLoader configLoader = new ConfigLoader(env);
-    private File         projectDir   = TestUtils.examplesDir("repos/standard");
-    private Config       config       = configLoader.loadConfigFor(new ProjectWorkspaceImpl(projectDir));
+    public ConfigLoaderTests_standardRepositories() {
+        super("repos/standard");
+    }
 
 
     @Test

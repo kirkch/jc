@@ -1,5 +1,8 @@
 package com.mosaic.jk.env;
 
+import com.mosaic.jk.config.Config;
+import com.mosaic.jk.io.ProjectWorkspace;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,6 +11,11 @@ import java.util.List;
  */
 public class EnvironmentFake implements Environment {
     public List<Event> recordedEvents = new ArrayList<Event>();
+
+    @Override
+    public Config fetchConfig() {
+        return null;
+    }
 
     @Override
     public void appStarted() {
@@ -29,6 +37,11 @@ public class EnvironmentFake implements Environment {
 
     public void warn( String msg ) {
         recordedEvents.add( new Event("WARN: "+ msg) );
+    }
+
+    @Override
+    public ProjectWorkspace getProjectWorkspace() {
+        return null;
     }
 
     public static class Event {

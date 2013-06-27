@@ -17,12 +17,11 @@ import static org.junit.Assert.assertEquals;
 /**
  *
  */
-public class ConfigLoaderTests_singleSourceAndTestDirectories {
+public class ConfigLoaderTests_singleSourceAndTestDirectories extends BaseConfigTestCase {
 
-    private Environment  env                  = new EnvironmentFake();
-    private ConfigLoader configLoader         = new ConfigLoader(env);
-    private File         zeroConfigProjectDir = TestUtils.examplesDir( "zeroConfig/singleSourceAndTestDirectories" );
-    private Config       config               = configLoader.loadConfigFor( new ProjectWorkspaceImpl(zeroConfigProjectDir) );
+    public ConfigLoaderTests_singleSourceAndTestDirectories() {
+        super("zeroConfig/singleSourceAndTestDirectories");
+    }
 
 
     @Test

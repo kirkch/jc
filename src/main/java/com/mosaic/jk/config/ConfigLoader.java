@@ -3,7 +3,6 @@ package com.mosaic.jk.config;
 import com.mosaic.jk.env.Environment;
 import com.mosaic.jk.io.IniFileDelegate;
 import com.mosaic.jk.io.ProjectWorkspace;
-import com.mosaic.jk.io.ProjectWorkspaceImpl;
 import com.mosaic.jk.utils.*;
 
 import java.io.File;
@@ -23,7 +22,8 @@ public class ConfigLoader {
     }
 
 
-    public Config loadConfigFor( ProjectWorkspace project ) {
+    public Config loadConfig() {
+        ProjectWorkspace project = env.getProjectWorkspace();
         File   projectDirectory = project.getRootProjectDirectory();
         Config config           = new Config();
 

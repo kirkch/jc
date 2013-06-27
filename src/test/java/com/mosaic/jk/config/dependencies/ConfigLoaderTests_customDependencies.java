@@ -15,20 +15,16 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static com.mosaic.jk.TestUtils.assertArrayEqualsIgnoreOrder;
 import static org.junit.Assert.assertEquals;
 
 /**
  *
  */
-public class ConfigLoaderTests_customDependencies {
+public class ConfigLoaderTests_customDependencies extends BaseConfigTestCase {
 
-    private Environment env           = new EnvironmentFake();
-    private ConfigLoader configLoader = new ConfigLoader(env);
-    private File zeroConfigProjectDir = TestUtils.examplesDir("dependencies/multipleModulesAndDependencies");
-    private Config config       = configLoader.loadConfigFor( new ProjectWorkspaceImpl(zeroConfigProjectDir) );
-
-
+    public ConfigLoaderTests_customDependencies() {
+        super("dependencies/multipleModulesAndDependencies");
+    }
 
 
     @Test
