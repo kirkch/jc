@@ -21,5 +21,7 @@ public interface Environment {
 
     ProjectWorkspace getProjectWorkspace();
 
-    void demarcateJob( String jobName, VoidFunction0 job );
+    void timeAndInvokeJob(String jobName, VoidFunction0 job);
+
+    void setCount(String entityName, int count);
 }

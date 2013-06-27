@@ -20,26 +20,44 @@ import java.util.*;
 @SuppressWarnings({"ResultOfMethodCallIgnored", "unchecked"})
 public class JavaCompiler {
 
-    public void compile( final Environment env, final Config config ) {
+    public void compile( final Environment env ) {
         VoidFunction0 compileJavaJob = new VoidFunction0() {
             public void invoke() {
-                List<File>      sourceDirectories = new ArrayList<File>();
-                Set<Dependency> dependencies      = new HashSet<Dependency>();
+                Config          config          = env.fetchConfig();
+                List<JavaFile>  sourceJavaFiles = scanModulesForJavaSourceFiles(config.modules);
+                List<String>    dependencies    = locateAndOptionallyDownloadDependencies(config);
 
-                for ( ModuleConfig module : config.modules ) {
-                    Collections.addAll( sourceDirectories, module.sourceDirectories );
+                env.setCount( "javafile", sourceJavaFiles.size() );
 
-                    dependencies.addAll( module.dependencies );
-                }
+                compile( sourceJavaFiles, config.destinationDirectory, dependencies );
 
-                List<String> resolvedExternalDependencies = resolveDependencies( config.downloadRepositories, dependencies );
-                compile( sourceDirectories, config.destinationDirectory, resolvedExternalDependencies );
-
-                generateManifest( env, config, resolvedExternalDependencies );
+                generateManifest( env, config, dependencies );
             }
         };
 
-        env.demarcateJob("compilejava", compileJavaJob);
+        env.timeAndInvokeJob("compilejava", compileJavaJob);
+    }
+
+    private List<String> locateAndOptionallyDownloadDependencies(Config config) {
+        Set<Dependency> dependencies      = new HashSet<Dependency>();
+
+        for ( ModuleConfig module : config.modules ) {
+            dependencies.addAll( module.dependencies );
+        }
+
+        return resolveDependencies( config.downloadRepositories, dependencies );
+    }
+
+    private List<JavaFile> scanModulesForJavaSourceFiles(List<ModuleConfig> modules) {
+        List<JavaFile> sourceJavaFiles = new ArrayList<JavaFile>(100);
+
+        for ( ModuleConfig module : modules ) {
+            for ( File sourceDirectory : module.sourceDirectories ) {
+                sourceJavaFiles.addAll(scanForAllJavaFiles(sourceDirectory));
+            }
+        }
+
+        return sourceJavaFiles;
     }
 
     private List<String> resolveDependencies( List<RepositoryRef> downloadRepositories, Set<Dependency> dependencies ) {
@@ -105,7 +123,7 @@ public class JavaCompiler {
         }
     }
 
-    private void compile( List<File> sourceDirectories, File destinationDirectory, List<String> dependencies ) {
+    private void compile( List<JavaFile> sourceFiles, File destinationDirectory, List<String> dependencies ) {
         destinationDirectory.mkdirs();
 
         javax.tools.JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
@@ -135,15 +153,7 @@ public class JavaCompiler {
 
 
 
-        List<JavaFile> javaFiles = new ArrayList<JavaFile>(100);
-
-        for ( File sourceDirectory : sourceDirectories ) {
-            javaFiles.addAll(scanForAllJavaFiles(sourceDirectory));
-        }
-
-
-
-        javax.tools.JavaCompiler.CompilationTask task = compiler.getTask( null, fileManager, diagnosticListener, compilerCommandLineArgs, null, javaFiles );
+        javax.tools.JavaCompiler.CompilationTask task = compiler.getTask( null, fileManager, diagnosticListener, compilerCommandLineArgs, null, sourceFiles );
 
         boolean success = task.call();
         if ( !success ) {

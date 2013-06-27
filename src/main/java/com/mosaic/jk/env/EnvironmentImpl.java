@@ -76,7 +76,7 @@ public class EnvironmentImpl implements Environment {
         err.println( "ERROR: " + msg );
     }
 
-    public void demarcateJob( String jobName, VoidFunction0 job ) {
+    public void timeAndInvokeJob(String jobName, VoidFunction0 job) {
         long startMillis = System.currentTimeMillis();
 
         try {
@@ -86,6 +86,10 @@ public class EnvironmentImpl implements Environment {
 
             buildStats.appendDuration(jobName, durationMillis);
         }
+    }
+
+    public void setCount(String entityName, int count) {
+        buildStats.setCount(entityName, count);
     }
 
     /**

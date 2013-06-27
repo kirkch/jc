@@ -30,7 +30,7 @@ public class Main {
                 out.writeToPOM( config );
 
                 JavaCompiler compiler = new JavaCompiler();
-                compiler.compile(env, config);
+                compiler.compile(env);
             }
         } finally {
             env.appFinished();

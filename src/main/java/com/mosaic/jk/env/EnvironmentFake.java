@@ -13,17 +13,14 @@ import java.util.List;
 public class EnvironmentFake implements Environment {
     public List<Event> recordedEvents = new ArrayList<Event>();
 
-    @Override
     public Config fetchConfig() {
         return null;
     }
 
-    @Override
     public void appStarted() {
         recordedEvents.add( new Event("started") );
     }
 
-    @Override
     public void appFinished() {
         recordedEvents.add( new Event("finished") );
     }
@@ -44,8 +41,11 @@ public class EnvironmentFake implements Environment {
         return null;
     }
 
-    public void demarcateJob( String jobName, VoidFunction0 job ) {
+    public void timeAndInvokeJob(String jobName, VoidFunction0 job) {
 
+    }
+
+    public void setCount(String entityName, int count) {
     }
 
     public static class Event {
