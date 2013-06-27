@@ -329,7 +329,6 @@ class ClassFileManager extends ForwardingJavaFileManager {
 //System.out.println("f = " + f + " " + f.toUri());
 
         String relativeFileName = className.replaceAll( "\\.", "/" ) + ".class";
-        System.out.println( "className.replaceAll = " + relativeFileName );
 
         File file = new File(destinationDirectory, relativeFileName);
         file.getParentFile().mkdirs();
