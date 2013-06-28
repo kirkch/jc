@@ -31,9 +31,10 @@ with a core focus, rather than big mammoth tools that try to consume and own eve
 
 * Supports zero configuration
 * Supports simple overrides for what matters
-* Is opinionated as to what matters (specifically compilation, testing and packaging only)
+* Is opinionated as to what matters (specifically compilation, unit testing and packaging only)
+* Supports Continuous Deployment
 * Declarative
-* Speed
+* Fast
 
 ## Where JC will go
 
@@ -49,7 +50,10 @@ are also fair game. But without having to add ten lines of config per language, 
 # JC Directory Structure
 
     /project                    project configuration directory (optional)
+            /meta               config overrides, java version, project name and so forth
             /dependencies       lists jar file and inter module dependencies
+            /repositories       where to download dependencies from
+            /buildstats         overwritten every build; contains stats about the build run
     /src                        may contain java code or module directories
         /module1
         /module2
@@ -63,6 +67,8 @@ For a range of examples, see the [examples directory](examples).
 # Using JC
 
 ## Example 1: As simple as it gets
+
+Run the following commands from a Unix prompt:
 
     mkdir -p src/com/funky
     echo 'package com.funky;'                          >> src/com/funky/Main.java
@@ -78,13 +84,19 @@ Things to note:
 
 * JC will have detected the java code under `src` and compiled it to `target/classes`
 * JC will have generated a META-INF file.  In that file com.funky.Main will have been declared so when packaged as a jar it will be easy to execute.
-* JC currently uses Ivy behind the scenes to manage and download dependencies.
+* JC will have used Ivy behind the scenes to manage and download dependencies.
 * A Maven pom.xml file was generated. It suggests groupId, artifactId and version. As well as added JUnit and Mockito to the classpath by default.
+* The default version number is '0.0.1-{username}_{incrementingNumber}.
+* The default project name is the name of the directory containing the `src` directory.
+* The default groupId is taken from the java source code's directory structure.
+* The default artifactId comes from the project name.
 
 Perfect for getting up and running fast.  If you are using IntelliJ, you can open the pom directly or run mvn idea:idea to generate
 the IDE files.
 
 ## Example 2: Unit Tests
+
+Run the following commands from a Unix prompt:
 
     mkdir -p tests/com/funky
     echo 'package com.funky;'                                     >> tests/com/funky/MainTest.java
@@ -102,12 +114,15 @@ TODO JC currently does not run tests (but it will soon). However until then mvn 
 
 ## Example 3: Multiple modules
 
-Create modules under the src directory.  Consider:
+JC can tell whether a package is directly under the src directory or a collection
+of modules.  To see this in action, create modules under the src directory.  Consider:
 
     src/client/com/funky/ClientV1.java
     src/server/com/funky/Main.java
 
-JC will detect two separate modules, one called client and the other called server.
+JC will detect two separate modules, one called client and the other called server. Each
+module can be referenced when declaring dependencies as well as what artefacts will
+be generated.
 
 
 ## Example 4: Declaring dependencies, simple
@@ -160,7 +175,7 @@ readability.
 
 ## Example 6: Declaring download repositories
 
-jc supports the same repositories as Maven.  To add a new repository to
+jc supports the same repositories as Maven and Ivy.  To add a new repository to
 download artifacts from, list them in 'project/repositories'.
 
 Example file:
@@ -172,4 +187,54 @@ Example file:
 The format of the file is:
 
     OptionalRepoName: RepositoryURL
+
+If the repository name is not specified, then one will be generated automatically
+from the url. For example, http://nexus.sonatype.com/repository will be named
+'nexus.sonatype.com Repository'.
+
+## Example 7: Build statistics
+
+Every time jc is run, project/buildstats will be overwritten.  It contains
+a capture of how long different parts of the build took, as well as a count
+of some interesting facets of the project that was detected during the build. All
+timings are displayed in seconds, and a history of the last ten runs are kept. With
+the most recent run being the last number at the end of the comma separated line.
+
+An example of the buildstats file after a few runs.
+
+    buildcount_ck=5
+    javafile_count=1
+    build_duration_compilejava=0.605,0.604,0.611
+    build_duration_filescan=0.0010,0.0011,0.0010
+    build_duration_pomwriter=0.011,0.013,0.011
+    build_duration_total=0.636,0.633,0.638,0.636
+
+
+## Example 8: Controlling the version numbering
+
+The format of the build version string used by JC is: `{versionNumber}-{buildType}_{buildCount}`.
+
+Where `version number` defaults to `0.0.1` and can be specified in `project/meta`
+by setting `version=1.0.0`.
+
+The `buildType` defaults to the username of the account running the build, but
+can be specified from the command line with `-DbuildType=release`.
+
+And lastly the `buildCount` is a number persisted in `project/buildstats` and
+is incremented each time jc is run.  This gives each build a unique version
+number useful for continuous deployment environments.  If an older artefact needs
+to be rebuilt, the `buildCount` can also be specified from the command line
+with `-DbuildCount=11`.
+
+
+## Example 9: Turning on snapshot dependency support
+
+JC prefers reproducable and tracable builds which support continuous deployment
+environments, however you may have to make use of a snapshot build or two when
+working with other teams who use different tools and processes.  By default
+JC will not check for snapshots from repositories, but add `supportSnapshots = true`
+to `project/meta` and you will be golden.
+
+
+
 

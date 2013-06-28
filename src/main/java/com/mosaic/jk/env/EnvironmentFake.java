@@ -53,6 +53,14 @@ public class EnvironmentFake implements Environment {
     public void setCount(String entityName, int count) {
     }
 
+    public long getBuildCount() {
+        return 1;
+    }
+
+    public String getEnvironmentalBuildType() {
+        return "dev";
+    }
+
     public static class Event {
         public final String desc;
 

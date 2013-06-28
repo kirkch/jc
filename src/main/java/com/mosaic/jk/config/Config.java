@@ -12,7 +12,8 @@ public class Config {
 
     public String groupId;
     public String projectName;
-    public String versionNumber;       // x.y.z-T      release-10.7.1.229     ck-10.7.1.2     build-(ver).(count)    (ver)-(attr)    10.7.1.229-release
+    public String versionFull;       // 0.0.1-release_6
+    public String version;           // 0.0.1
 
     public String javaVersion;
 

@@ -108,30 +108,6 @@ mvn idea:idea
 
 
 
-version scheme
--------------
-
-Does not support SNAPSHOT builds; SNAPSHOT is not Continuous Deployment friendly.
-
-
-starts from 0.0.1, override in project/config  (eg version=0.0.2)
-
-builds to 0.0.1-{buildName}_{buildNum}
-
-eg  0.0.1-ck_23
-or  0.0.1-release_10
-
-The name defaults to the OS user name.  Can be overridden with -DbuildName=release. Useful for CI builds.
-
-
-The build number starts from 1 and increments each time jc is run.  The incrementing number is stored to disk
-in ~/.jc/{project}/buildnumber.  Thus number is not transferred between machines.
-
-A custom number can be passed in via -DbuildNumber=X.  Useful for integrating with builds, which manage their
-own build number.
-
--DbuildName=release
-
 
 Q: How to manage dependency clashes
 Q: How to know when new versions exist

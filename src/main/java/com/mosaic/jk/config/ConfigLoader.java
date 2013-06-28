@@ -28,7 +28,6 @@ public class ConfigLoader {
         Config config           = new Config();
 
         config.projectName          = fetchDefaultProjectName( projectDirectory );
-        config.versionNumber        = fetchDefaultVersionNumber();
         config.modules              = loadModuleInformation( project );
         config.groupId              = inferDefaultGroupId( config.modules );
 
@@ -38,23 +37,21 @@ public class ConfigLoader {
         config.downloadRepositories = project.loadRepositories();
 
         try {
-            loadDependenciesIntoModuleObjects( config.groupId, config.versionNumber, config.modules, project );
-
-
             Properties metaConfig = project.loadPropertiesFile( "meta" );
 
+            config.version           = metaConfig.getProperty("version","0.0.1");
+            config.versionFull       = config.version+"-"+env.getEnvironmentalBuildType()+"_"+env.getBuildCount();
             config.javaVersion       = metaConfig.getProperty( "java", "1.6" );
             config.supportsSnapshots = Boolean.parseBoolean(metaConfig.getProperty("supportSnapshots","false"));
+
+
+            loadDependenciesIntoModuleObjects( config.groupId, config.versionFull, config.modules, project );
         } catch ( IOException e ) {
             throw new RuntimeException(e);
         }
 
 
         return config;
-    }
-
-    private String fetchDefaultVersionNumber() {
-        return "0.0.1";
     }
 
     private String fetchDefaultProjectName( File projectDirectory ) {

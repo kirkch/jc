@@ -1,16 +1,11 @@
 package com.mosaic.jk.config.dependencies;
 
-import com.mosaic.jk.TestUtils;
 import com.mosaic.jk.config.*;
-import com.mosaic.jk.env.Environment;
-import com.mosaic.jk.env.EnvironmentFake;
-import com.mosaic.jk.io.ProjectWorkspaceImpl;
 import com.mosaic.jk.utils.Function1;
 import com.mosaic.jk.utils.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -72,7 +67,7 @@ public class ConfigLoaderTests_customDependencies extends BaseConfigTestCase {
 
         Dependency rx     = new Dependency( DependencyScope.COMPILE, "com.netflix.rxjava", "rxjava-core", "0.8.4" );
         Dependency junit  = new Dependency( DependencyScope.TEST, "junit", "junit", "4.8.2" );
-        Dependency client = new Dependency( DependencyScope.COMPILE, config.groupId, "client", config.versionNumber, null, true );
+        Dependency client = new Dependency( DependencyScope.COMPILE, config.groupId, "client", config.versionFull, null, true );
         Dependency netty  = new Dependency( DependencyScope.COMPILE, "io.netty", "netty-all", "4.0.0.CR2" );
 
         assertEquals( Arrays.asList(rx,junit,client,netty), module.dependencies );

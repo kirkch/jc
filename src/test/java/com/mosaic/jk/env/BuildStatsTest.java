@@ -138,7 +138,7 @@ public class BuildStatsTest {
 
         stats.loadStats();
 
-        assertEquals( 0, stats.getBuildCount("release") );
+        assertEquals( 1, stats.getBuildCount("release") );
     }
 
     @Test

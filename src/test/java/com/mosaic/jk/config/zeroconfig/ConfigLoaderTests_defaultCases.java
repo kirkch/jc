@@ -1,10 +1,6 @@
 package com.mosaic.jk.config.zeroconfig;
 
-import com.mosaic.jk.TestUtils;
 import com.mosaic.jk.config.*;
-import com.mosaic.jk.env.Environment;
-import com.mosaic.jk.env.EnvironmentFake;
-import com.mosaic.jk.io.ProjectWorkspaceImpl;
 import org.junit.Test;
 
 import java.io.File;
@@ -37,8 +33,13 @@ public class ConfigLoaderTests_defaultCases extends BaseConfigTestCase {
     }
 
     @Test
+    public void defaultVersionFull() {
+        assertEquals( "0.0.1-"+System.getProperty("user.name")+"_1", config.versionFull);
+    }
+
+    @Test
     public void defaultVersion() {
-        assertEquals( "0.0.1", config.versionNumber );
+        assertEquals( "0.0.1", config.version );
     }
 
     @Test

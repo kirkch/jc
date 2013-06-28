@@ -69,7 +69,7 @@ scalafile_count=80
 
     public long getBuildCount( String buildCategory ) {
         String key   = "buildcount_"+buildCategory;
-        String value = properties.getProperty(key, "0");
+        String value = properties.getProperty(key, "1");
 
         return Long.parseLong(value);
     }

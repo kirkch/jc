@@ -44,7 +44,7 @@ public class EnvironmentImpl implements Environment {
         startMillis = System.currentTimeMillis();
 
         buildStats.loadStats();
-        buildStats.incrementBuildCount(getEnvironmentalBuildName());
+        buildStats.incrementBuildCount(getEnvironmentalBuildType());
 
         out.println( "JC");
     }
@@ -105,13 +105,17 @@ public class EnvironmentImpl implements Environment {
         buildStats.setCount(entityName, count);
     }
 
+    public long getBuildCount() {
+        return buildStats.getBuildCount( getEnvironmentalBuildType() );
+    }
+
     /**
      * Defaults the build name to the logged in user's account name. Can be
-     * overridden with -DbuildName=release
+     * overridden with -DbuildType=release
      */
-    private String getEnvironmentalBuildName() {
+    public String getEnvironmentalBuildType() {
         String userName     = System.getProperty("user.name");
-        String envBuildName = System.getProperty("buildName", userName);
+        String envBuildName = System.getProperty("buildType", userName);
 
         return envBuildName;
     }

@@ -31,7 +31,7 @@ public class POMWriter {
         VoidFunction0 writePomJob = new VoidFunction0() {
             public void invoke() {
                 String mavenArtifactName  = config.projectName.replaceAll( " ", "-" ).toLowerCase();
-                String mavenVersionNumber = config.versionNumber + "-SNAPSHOT";
+                String mavenVersionNumber = config.version + "-SNAPSHOT";
 
                 env.info( "Maven", "Generating POM file" );
 

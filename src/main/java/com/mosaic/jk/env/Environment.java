@@ -26,4 +26,7 @@ public interface Environment {
     <T> T invokeAndTimeJob(String jobName, Function0<T> job);
 
     void setCount(String entityName, int count);
+
+    public long getBuildCount();
+    public String getEnvironmentalBuildType();
 }

@@ -177,8 +177,8 @@ public class JavaCompiler {
 //        File   mavenRepositoryDirectory = new File("~/.m2/repository");
 //        File   groupDirectory           = new File( mavenRepositoryDirectory, dependency.groupId.replaceAll("\\.",directorySeparator));
 //        File   artifactDirectory        = new File( groupDirectory, dependency.artifactName );
-//        File   jarDirectory             = new File( artifactDirectory, dependency.versionNumber );
-//        File   jar                      = new File( jarDirectory, dependency.artifactName + "-" + dependency.versionNumber + ".jar" );
+//        File   jarDirectory             = new File( artifactDirectory, dependency.versionFull );
+//        File   jar                      = new File( jarDirectory, dependency.artifactName + "-" + dependency.versionFull + ".jar" );
 //
 //
 //        try {
