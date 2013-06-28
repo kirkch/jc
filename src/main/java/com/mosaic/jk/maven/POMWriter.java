@@ -332,7 +332,7 @@ public class POMWriter {
         Set<Dependency> dependenciesSoFar = new HashSet<Dependency>();
         for ( ModuleConfig module : config.modules ) {
             for ( Dependency d : module.dependencies ) {
-                if ( !dependenciesSoFar.contains(d) ) {
+                if ( !dependenciesSoFar.contains(d) && d.isExternal() ) {
                     printDependency(d);
 
                     dependenciesSoFar.add(d);
