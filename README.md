@@ -146,7 +146,8 @@ of the dependencies file is as follows
 
     [moduleName]
 
-    mavenRepositoryDependency
+    # comment
+    mavenRepositoryDependency   #end of line comment
     localProjectModuleName
 
 
