@@ -138,4 +138,13 @@ public class StringUtils {
         return a.equals(b);
     }
 
+    public static String trimFrom(String line, char c) {
+        int index = line.indexOf(c);
+        if ( index < 0 ) {
+            return line;
+        }
+
+        return line.substring(0,index);
+    }
+
 }

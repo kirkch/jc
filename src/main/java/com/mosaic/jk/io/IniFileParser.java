@@ -1,5 +1,6 @@
 package com.mosaic.jk.io;
 
+import com.mosaic.jk.utils.StringUtils;
 import com.mosaic.jk.utils.Validate;
 
 import java.io.BufferedReader;
@@ -37,15 +38,19 @@ public class IniFileParser {
     }
 
     private void parseLine( String line, IniFileDelegate delegate ) {
-        String trimmedLine = line.trim();
+        String trimmedLine = stripCommentFrom(line).trim();
 
         if ( trimmedLine.startsWith("[") && trimmedLine.endsWith("]") ) {
             String label = trimmedLine.substring( 1, trimmedLine.length()-1 ).trim();
 
             delegate.labelRead( label );
         } else if ( trimmedLine.length() > 0 ) {
-            delegate.lineRead( trimmedLine );
+            delegate.lineRead(trimmedLine);
         }
+    }
+
+    private String stripCommentFrom(String line) {
+        return StringUtils.trimFrom(line, '#');
     }
 
 }

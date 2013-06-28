@@ -147,6 +147,29 @@ public class IniFileParserTest {
     }
 
     @Test
+    public void givenWithCommentsIniFile_expectCommentsToBeIgnored() throws IOException {
+        Reader in = new InputStreamReader( this.getClass().getResourceAsStream("withComments.ini") );
+
+        try {
+            reader.read( in, delegate );
+
+            List<String> expectedEvents = Arrays.asList(
+                "parsingStarted",
+                "labelRead(WILD)",
+                "lineRead(abc)",
+                "labelRead(MIST)",
+                "lineRead(bcd)",
+                "lineRead(cde)",
+                "parsingFinished"
+            );
+
+            assertEquals( expectedEvents, delegate.history );
+        } finally {
+            in.close();
+        }
+    }
+
+    @Test
     public void givenIOExceptionDuringReading_expectParseFailedCallback() throws IOException {
         ReaderFake in = new ReaderFake( "[LABEL]" );
         in.errorAfterNCharacters(2);

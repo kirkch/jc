@@ -13,7 +13,6 @@ TODO package IVYJAR
 TODO package MAVENJAR
 TODO manifest line limit for class path
 
-TODO support comments in dependencies file
 #com.mosaic         : threadtesting-mosaic : 0.0.1-SNAPSHOT     <test>
 
 
