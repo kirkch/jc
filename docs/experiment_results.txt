@@ -1,0 +1,22 @@
+
+
+
+
+
+8th July 2013 - speed up file writing by buffering bytes
+--------------------------------
+
+rationale:  resizing a file as it expands is expensive; is buffering the entire
+            file before streaming to disk faster
+
+conclusion: yes for small files, no for big files; and in either case
+            incremental buffering is fastest
+
+future idea:  is an off heap version of BufferedOutputStream kinda to the GC?
+              or one that reuses the byte array file after file.
+              rationale being that large byte arrays would get tenured prematurely.
+
+                                             small file (ns),  big file (ns)
+approach 1: custom linked list byte buffer        950000,         1566000
+approach 2: no buffer                            1772000,         1285000
+approach 3: standard BufferedOutputStream         344000,          967000

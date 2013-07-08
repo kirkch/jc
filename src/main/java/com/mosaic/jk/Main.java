@@ -7,6 +7,7 @@ import com.mosaic.jk.env.EnvironmentImpl;
 import com.mosaic.jk.maven.POMWriter;
 import com.mosaic.jk.utils.FileUtils;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -26,7 +27,7 @@ public class Main {
             Config config = env.fetchConfig();
 
             if ( validateConfig(env) ) {
-                POMWriter out = new POMWriter( env, new FileWriter(new File(rootDirectory,"pom.xml")) );
+                POMWriter out = new POMWriter( env, new BufferedWriter(new FileWriter(new File(rootDirectory,"pom.xml"))) );
                 out.writeToPOM( config );
 
                 JavaCompiler compiler = new JavaCompiler();
