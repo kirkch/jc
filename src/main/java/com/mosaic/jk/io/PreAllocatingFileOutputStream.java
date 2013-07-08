@@ -111,16 +111,24 @@ public class PreAllocatingFileOutputStream extends OutputStream {
         }
 
         public ByteBlock write( byte[] inputBuffer, int off, int len ) throws IOException {
+            if ( off+len > inputBuffer.length ) {
+                throw new IllegalArgumentException("request to copy over flows right hand side of the input buffer");
+            }
+
             int capacity = buffer.length - endIndexExc;
 
+            
+
             if ( capacity >= len ) {
-                System.arraycopy( buffer, off, inputBuffer, endIndexExc, len );
+                System.arraycopy( inputBuffer, off, buffer, endIndexExc, len );
+                this.endIndexExc += len;
 
                 return this;
             } else {
-                System.arraycopy( buffer, off, inputBuffer, endIndexExc, capacity );
+                System.arraycopy( inputBuffer, off, buffer, endIndexExc, capacity );
+                this.endIndexExc += capacity;
 
-                return nextBlock().write(inputBuffer, capacity, len-capacity);
+                return nextBlock().write(inputBuffer, off+capacity, len-capacity);
             }
         }
 
