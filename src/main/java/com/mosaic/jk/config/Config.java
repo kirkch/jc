@@ -11,6 +11,11 @@ import java.util.List;
 public class Config {
 
     public String groupId;
+
+    /**
+     * Suitable for display as a title in english text.  That is it contains
+     * spaces and is capitalised.  eg 'Full Spectrum'.
+     */
     public String projectName;
     public String versionFull;       // 0.0.1-release_6
     public String version;           // 0.0.1

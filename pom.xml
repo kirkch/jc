@@ -52,40 +52,80 @@
             <version>0.6</version>
         </dependency>
 
+        <dependency>
+            <groupId>de.schlichtherle.truezip</groupId>
+            <artifactId>truezip-file</artifactId>
+            <version>7.7.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>de.schlichtherle.truezip</groupId>
+            <artifactId>truezip-driver-zip</artifactId>
+            <version>7.7.2</version>
+        </dependency>
+
     </dependencies>
 
     <build>
         <plugins>
+            <!--<plugin>-->
+                <!--<artifactId>maven-assembly-plugin</artifactId>-->
+                <!--<version>2.2-beta-2</version>-->
+                <!--<configuration>-->
+                    <!--<appendAssemblyId>false</appendAssemblyId>-->
+                    <!--<descriptorRefs>-->
+                        <!--<descriptorRef>jar-with-dependencies</descriptorRef>-->
+                    <!--</descriptorRefs>-->
+                    <!--<archive>-->
+                      <!--<manifest>-->
+                        <!--<mainClass>com.mosaic.jk.Main</mainClass>-->
+                      <!--</manifest>-->
+                      <!--&lt;!&ndash;<manifestEntries>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<Group-Id>${project.groupId}</Group-Id>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<Artifact-Id>${project.artifactId}</Artifact-Id>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<Version>${project.version}</Version>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<Git-SHA1>${git.buildNumber}</Git-SHA1>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<Built-When>${maven.build.timestamp}</Built-When>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<Build-Machine>${build.host.name}</Build-Machine>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<Build-Number>${CRUISE_PIPELINE_COUNTER}.${CRUISE_STAGE_COUNTER}</Build-Number>&ndash;&gt;-->
+                      <!--&lt;!&ndash;</manifestEntries>&ndash;&gt;-->
+                    <!--</archive>-->
+                <!--</configuration>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<id>make-assembly</id>-->
+                        <!--<phase>package</phase>-->
+                        <!--<goals>-->
+                            <!--<goal>assembly</goal>-->
+                        <!--</goals>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+            <!--</plugin>-->
             <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.2-beta-2</version>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.4</version>
                 <configuration>
-                    <appendAssemblyId>false</appendAssemblyId>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
                     <archive>
-                      <manifest>
-                        <mainClass>com.mosaic.jk.Main</mainClass>
-                      </manifest>
-                      <!--<manifestEntries>-->
-                        <!--<Group-Id>${project.groupId}</Group-Id>-->
-                        <!--<Artifact-Id>${project.artifactId}</Artifact-Id>-->
-                        <!--<Version>${project.version}</Version>-->
-                        <!--<Git-SHA1>${git.buildNumber}</Git-SHA1>-->
-                        <!--<Built-When>${maven.build.timestamp}</Built-When>-->
-                        <!--<Build-Machine>${build.host.name}</Build-Machine>-->
-                        <!--<Build-Number>${CRUISE_PIPELINE_COUNTER}.${CRUISE_STAGE_COUNTER}</Build-Number>-->
-                      <!--</manifestEntries>-->
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix>lib/</classpathPrefix>
+                            <mainClass>com.mosaic.jk.Main</mainClass>
+                        </manifest>
                     </archive>
                 </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>make-assembly</id>
-                        <phase>package</phase>
+                        <phase>install</phase>
                         <goals>
-                            <goal>assembly</goal>
+                            <goal>copy-dependencies</goal>
                         </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

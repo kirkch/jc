@@ -32,7 +32,7 @@ public class ConfigLoaderTests_singleSourceAndTestDirectories extends BaseConfig
 
     @Test
     public void defaultVersion() {
-        assertEquals( "0.0.1-"+System.getProperty("user.name")+"_1", config.versionFull);
+        assertEquals( "0.0.1."+System.getProperty("user.name")+"_1", config.versionFull);
     }
 
     @Test

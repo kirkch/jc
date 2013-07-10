@@ -8,6 +8,9 @@ import com.mosaic.jk.env.Environment;
 import com.mosaic.jk.utils.Function0;
 import com.mosaic.jk.utils.ListUtils;
 import com.mosaic.jk.utils.VoidFunction0;
+import de.schlichtherle.truezip.file.TFile;
+import de.schlichtherle.truezip.file.TFileOutputStream;
+import de.schlichtherle.truezip.file.TFileWriter;
 
 import javax.tools.*;
 import java.io.*;
@@ -25,14 +28,19 @@ public class JavaCompiler {
         VoidFunction0 compileJavaJob = new VoidFunction0() {
             public void invoke() {
                 Config          config          = env.fetchConfig();
-                List<JavaFile>  sourceJavaFiles = scanModulesForJavaSourceFiles(env, config.modules);
+                List<JavaSourceCodeFile>  sourceJavaFiles = scanModulesForJavaSourceFiles(env, config.modules);
                 List<String>    dependencies    = locateAndOptionallyDownloadDependencies(config);
 
                 env.setCount("javafile", sourceJavaFiles.size());
 
-                compile(sourceJavaFiles, config.destinationDirectory, dependencies);
+                // config.destinationDirectory
 
-                generateManifest( env, config, dependencies );
+                TFile targetJar = new TFile(config.rootDirectory, "target/"+config.projectName.replaceAll(" ","_").toLowerCase()+"-"+config.versionFull+".jar");
+                targetJar.getParentFile().mkdirs();
+
+                compile(sourceJavaFiles, targetJar, dependencies);
+
+                generateManifest( env, config, dependencies, targetJar );
             }
         };
 
@@ -49,8 +57,8 @@ public class JavaCompiler {
         return resolveDependencies( config.downloadRepositories, dependencies );
     }
 
-    private List<JavaFile> scanModulesForJavaSourceFiles( Environment env, List<ModuleConfig> modules ) {
-        List<JavaFile> sourceJavaFiles = new ArrayList<JavaFile>(100);
+    private List<JavaSourceCodeFile> scanModulesForJavaSourceFiles( Environment env, List<ModuleConfig> modules ) {
+        List<JavaSourceCodeFile> sourceJavaFiles = new ArrayList<JavaSourceCodeFile>(100);
 
         for ( ModuleConfig module : modules ) {
             for ( File sourceDirectory : module.sourceDirectories ) {
@@ -80,15 +88,15 @@ public class JavaCompiler {
         return resolvedDependencies;
     }
 
-    private void generateManifest(Environment env, Config config, List<String> dependencies) {
-        File metaDirectory = new File( config.destinationDirectory, "META-INF" );
-        File manifestFile  = new File( metaDirectory, "MANIFEST.MF" );
+    private void generateManifest(Environment env, Config config, List<String> dependencies, TFile targetJar) {
+        TFile metaDirectory = new TFile( targetJar, "META-INF" );
+        TFile manifestFile  = new TFile( metaDirectory, "MANIFEST.MF" );
 
         metaDirectory.mkdirs();
 
         List<String> mainClasses = config.allMainFQNs();
         try {
-            PrintWriter out = new PrintWriter( manifestFile );
+            PrintWriter out = new PrintWriter( new TFileWriter(manifestFile) );
 
             try {
                 int numMains = mainClasses.size();
@@ -124,9 +132,7 @@ public class JavaCompiler {
         }
     }
 
-    private void compile( List<JavaFile> sourceFiles, File destinationDirectory, List<String> dependencies ) {
-        destinationDirectory.mkdirs();
-
+    private void compile( List<JavaSourceCodeFile> sourceFiles, File destination, List<String> dependencies ) {
         javax.tools.JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 
         DiagnosticListener diagnosticListener = new DiagnosticListener() {
@@ -136,7 +142,7 @@ public class JavaCompiler {
             }
         };
 
-        JavaFileManager fileManager = new ClassFileManager( compiler.getStandardFileManager(diagnosticListener, null, null), destinationDirectory );
+        JavaFileManager fileManager = new ClassFileManager( compiler.getStandardFileManager(diagnosticListener, null, null), destination );
 
         List<String> compilerCommandLineArgs = new ArrayList<String>();
         compilerCommandLineArgs.add( "-target" );
@@ -188,11 +194,11 @@ public class JavaCompiler {
 //        }
 //    }
 
-    private static List<JavaFile> scanForAllJavaFiles( final Environment env, final File sourceFileRootDirectory ) {
-        Function0<List<JavaFile>> job = new Function0<List<JavaFile>>() {
-            public List<JavaFile> invoke() {
+    private static List<JavaSourceCodeFile> scanForAllJavaFiles( final Environment env, final File sourceFileRootDirectory ) {
+        Function0<List<JavaSourceCodeFile>> job = new Function0<List<JavaSourceCodeFile>>() {
+            public List<JavaSourceCodeFile> invoke() {
                 Stack<File> nextDirectoryStack = new Stack<File>();
-                List<JavaFile> javaFiles = new ArrayList<JavaFile>(100);
+                List<JavaSourceCodeFile> javaFiles = new ArrayList<JavaSourceCodeFile>(100);
 
                 nextDirectoryStack.push( sourceFileRootDirectory );
 
@@ -209,7 +215,7 @@ public class JavaCompiler {
 
                             if ( c.isFile() && c.getName().endsWith(".java") ) {
                                 try {
-                                    javaFiles.add( new JavaFile(c) );
+                                    javaFiles.add( new JavaSourceCodeFile(c) );
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
@@ -229,11 +235,11 @@ public class JavaCompiler {
 
 }
 
-class JavaFile extends SimpleJavaFileObject {
+class JavaSourceCodeFile extends SimpleJavaFileObject {
 
     private File file;
 
-    public JavaFile( File file ) throws IOException {
+    public JavaSourceCodeFile(File file) throws IOException {
         super( URI.create("file:///" + file.getCanonicalPath()),Kind.SOURCE);
 
         this.file = file;
@@ -266,58 +272,28 @@ class JavaFile extends SimpleJavaFileObject {
 
 class JavaClassFile extends SimpleJavaFileObject {
 
-    private File file;
+    private TFile file;
 
-    public JavaClassFile( File file ) throws IOException {
+    public JavaClassFile( TFile file ) throws IOException {
         super(URI.create("file:///" + file.getCanonicalPath()), Kind.CLASS);
         this.file = file;
     }
 
-//    public byte[] getBytes() {
-//        byte[] buf = new byte[(int) file.length()];
-//
-//        try {
-//            FileInputStream in = new FileInputStream( file );
-//
-//            try {
-//                in.read( buf );
-//            } finally {
-//                in.close();
-//            }
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//        return buf;
-//    }
-
     public OutputStream openOutputStream() throws IOException {
-        return new FileOutputStream(file);
+        System.out.println("file = " + file);
+        return new BufferedOutputStream(new TFileOutputStream(file));
     }
 }
 
 @SuppressWarnings({"unchecked", "ResultOfMethodCallIgnored"})
 class ClassFileManager extends ForwardingJavaFileManager {
 
+    private File  destinationJarFile;
 
-    private File destinationDirectory;
-
-    public ClassFileManager(StandardJavaFileManager standardManager, File destinationDirectory) {
+    public ClassFileManager( StandardJavaFileManager standardManager, File destination ) {
         super(standardManager);
-        this.destinationDirectory = destinationDirectory;
+        this.destinationJarFile = destination;
     }
-
-//    public ClassLoader getClassLoader(Location location) {
-//        return new SecureClassLoader() {
-//            @Override
-//            protected Class<?> findClass(String name)
-//                throws ClassNotFoundException {
-//                byte[] b = jclassObject.getBytes();
-//                return super.defineClass(name, jclassObject
-//                    .getBytes(), 0, b.length);
-//            }
-//        };
-//    }
 
     public JavaFileObject getJavaFileForOutput(Location location, String className, JavaFileObject.Kind kind, FileObject sibling)
             throws IOException {
@@ -330,8 +306,9 @@ class ClassFileManager extends ForwardingJavaFileManager {
 
         String relativeFileName = className.replaceAll( "\\.", "/" ) + ".class";
 
-        File file = new File(destinationDirectory, relativeFileName);
-        file.getParentFile().mkdirs();
+        TFile file = new TFile(destinationJarFile, relativeFileName);
+
+//        file.getParentFile().mkdirs();
         return new JavaClassFile(file);
     }
 }

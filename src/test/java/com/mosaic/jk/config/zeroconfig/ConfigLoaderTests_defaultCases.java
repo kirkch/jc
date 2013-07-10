@@ -34,7 +34,7 @@ public class ConfigLoaderTests_defaultCases extends BaseConfigTestCase {
 
     @Test
     public void defaultVersionFull() {
-        assertEquals( "0.0.1-"+System.getProperty("user.name")+"_1", config.versionFull);
+        assertEquals( "0.0.1."+System.getProperty("user.name")+"_1", config.versionFull);
     }
 
     @Test

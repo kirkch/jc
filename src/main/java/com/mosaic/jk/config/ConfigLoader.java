@@ -40,7 +40,7 @@ public class ConfigLoader {
             Properties metaConfig = project.loadPropertiesFile( "meta" );
 
             config.version           = metaConfig.getProperty("version","0.0.1");
-            config.versionFull       = config.version+"-"+env.getEnvironmentalBuildType()+"_"+env.getBuildCount();
+            config.versionFull       = config.version+"."+env.getEnvironmentalBuildType()+"_"+env.getBuildCount();
             config.javaVersion       = metaConfig.getProperty( "java", "1.6" );
             config.supportsSnapshots = Boolean.parseBoolean(metaConfig.getProperty("supportSnapshots","false"));
 

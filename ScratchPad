@@ -27,8 +27,37 @@ jc dependency-check     or async check in the background and issue warning when 
                         flag to write updates on next run?
 
 
+copy resources into jar file
+generate files to include in jar  (both from scratch, and from templates)
+
 
 track usage  (sha1(mac)+cmd+duration)
+
+
+run jc twice; no work on second (timestamp checks)
+
+
+support 'jc <dir>'
+   - jc               compiles all src to project.jar   and all tests to  tests.jar  and runs tests   (good for boot strapping simple projects - no build tool required)
+   - jc <dir>         compiles dir to dir.jar    (simple/single job - good for embedding into build tool)
+   - jc <dir> <dir>   compiles multiple dirs
+
+
+test jar has Main that fires junit off
+
+----
+
+mind set:  small yet powerful unix command line tools
+           this way tools are offered to use jc, or parts of jc in any build
+           tool of choice (jc is a better java compiler; not a built tool..
+           the fact that a separate build tool may not be required blurs this line)
+
+jc                      - compiler  (direct to jars)
+                                 (pluggable for efficient extension for things needing to read source code; eg code gen, doc gen etc)
+jdown  [<dir>]          - maven repo downloader   ... should jc do this automatically? does that break the separate tools philosophy
+jup    <jar> [<src>]    -
+jdeptree                - print dependency tree
+
 
 
 Cloud Build
