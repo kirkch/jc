@@ -22,13 +22,70 @@ import java.util.*;
  *
  */
 @SuppressWarnings({"ResultOfMethodCallIgnored", "unchecked"})
-public class JavaCompiler {
+public class JavaCompiler2 {
+
+
+// EXAMPLE DEPENDENCIES FILE
+//    com.netflix.rxjava : rxjava-core : 0.8.4
+//    junit              : junit       : 4.8.2          <test>
+//
+//    [client]
+//    org.reflections    : reflections : 0.9.9-RC1
+//
+//    [server]
+//    client
+//    io.netty           : netty-all   : 4.0.0.CR2
+
+
+
+// Graph
+//  key (attrs) -> key (attrs), ...
+//
+//  io.netty:netty-all (4.0.0.CR2) -> lib1 (version,scope), lib2, lib3
+//  server -> client, io.netty:netty-all:4.0.0.CR2
+
+
+// Packaging
+//   artifactName: ThinJar(module)
+//   artifactName: ThinJar(module1,module2)
+//   artifactName: FatJar(module)
+//   artifactName: SelfDownloadJar(module1,module2)
+//   artifactName: RequireSeparateLibDirectoryJar(module)
+
+// detect lib cycles:  error
+// detect duplicate lib dependencies (different only by version).
+//     is backwards compatible? no -> error; yes -> pick latest
+
+
+// from dependency graph and packaging statements
+
+// compile module:     libs + target jars to write to
+
+
+// extension:
+// 1) tool to scan for latest version of libs declared in dependencies (local/remote/both)
+
+
+// new repo ideas:
+// 1) support backward compatibility information for existing maven central repos  (would sonatype add?)
+// 2) CI friendly repo; clear out old/unused libs (which implies keeping usage counts).
+// 3) CI friendly repo; if clear out too aggressive and request comes in, hook into build to recreate artifact
+
+
+
+//TVFS.umount();
+
+
+    public void compile( long previousTimestampMillis, List<TFile> destJars, List<File> srcDirectories, List<File> inProjectDependentJars ) {
+
+    }
+
 
     public void compile( final Environment env ) {
         VoidFunction0 compileJavaJob = new VoidFunction0() {
             public void invoke() {
                 Config          config          = env.fetchConfig();
-                List<JavaSourceCodeFile>  sourceJavaFiles = scanModulesForJavaSourceFiles(env, config.modules);
+                List<JavaSourceCodeFile2>  sourceJavaFiles = scanModulesForJavaSourceFiles(env, config.modules);
                 List<String>    dependencies    = locateAndOptionallyDownloadDependencies(config);
 
                 env.setCount("javafile", sourceJavaFiles.size());
@@ -57,8 +114,8 @@ public class JavaCompiler {
         return resolveDependencies( config.downloadRepositories, dependencies );
     }
 
-    private List<JavaSourceCodeFile> scanModulesForJavaSourceFiles( Environment env, List<ModuleConfig> modules ) {
-        List<JavaSourceCodeFile> sourceJavaFiles = new ArrayList<JavaSourceCodeFile>(100);
+    private List<JavaSourceCodeFile2> scanModulesForJavaSourceFiles( Environment env, List<ModuleConfig> modules ) {
+        List<JavaSourceCodeFile2> sourceJavaFiles = new ArrayList<JavaSourceCodeFile2>(100);
 
         for ( ModuleConfig module : modules ) {
             for ( File sourceDirectory : module.sourceDirectories ) {
@@ -132,7 +189,7 @@ public class JavaCompiler {
         }
     }
 
-    private void compile( List<JavaSourceCodeFile> sourceFiles, File destination, List<String> dependencies ) {
+    private void compile( List<JavaSourceCodeFile2> sourceFiles, File destination, List<String> dependencies ) {
         javax.tools.JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 
         DiagnosticListener diagnosticListener = new DiagnosticListener() {
@@ -142,7 +199,7 @@ public class JavaCompiler {
             }
         };
 
-        JavaFileManager fileManager = new ClassFileManager( compiler.getStandardFileManager(diagnosticListener, null, null), destination );
+        JavaFileManager fileManager = new ClassFileManager2( compiler.getStandardFileManager(diagnosticListener, null, null), destination );
 
         List<String> compilerCommandLineArgs = new ArrayList<String>();
         compilerCommandLineArgs.add( "-target" );
@@ -194,11 +251,11 @@ public class JavaCompiler {
 //        }
 //    }
 
-    private static List<JavaSourceCodeFile> scanForAllJavaFiles( final Environment env, final File sourceFileRootDirectory ) {
-        Function0<List<JavaSourceCodeFile>> job = new Function0<List<JavaSourceCodeFile>>() {
-            public List<JavaSourceCodeFile> invoke() {
+    private static List<JavaSourceCodeFile2> scanForAllJavaFiles( final Environment env, final File sourceFileRootDirectory ) {
+        Function0<List<JavaSourceCodeFile2>> job = new Function0<List<JavaSourceCodeFile2>>() {
+            public List<JavaSourceCodeFile2> invoke() {
                 Stack<File> nextDirectoryStack = new Stack<File>();
-                List<JavaSourceCodeFile> javaFiles = new ArrayList<JavaSourceCodeFile>(100);
+                List<JavaSourceCodeFile2> javaFiles = new ArrayList<JavaSourceCodeFile2>(100);
 
                 nextDirectoryStack.push( sourceFileRootDirectory );
 
@@ -221,7 +278,7 @@ public class JavaCompiler {
 
                                     mostRecentMod = Math.max( lastModifiedMillis, mostRecentMod );
 
-                                    javaFiles.add( new JavaSourceCodeFile(c) );
+                                    javaFiles.add( new JavaSourceCodeFile2(c) );
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
@@ -241,11 +298,11 @@ public class JavaCompiler {
 
 }
 
-class JavaSourceCodeFile extends SimpleJavaFileObject {
+class JavaSourceCodeFile2 extends SimpleJavaFileObject {
 
     private File file;
 
-    public JavaSourceCodeFile(File file) throws IOException {
+    public JavaSourceCodeFile2(File file) throws IOException {
         super( URI.create("file:///" + file.getCanonicalPath()),Kind.SOURCE);
 
         this.file = file;
@@ -276,11 +333,11 @@ class JavaSourceCodeFile extends SimpleJavaFileObject {
 }
 
 
-class JavaClassFile extends SimpleJavaFileObject {
+class JavaClassFile2 extends SimpleJavaFileObject {
 
     private TFile file;
 
-    public JavaClassFile( TFile file ) throws IOException {
+    public JavaClassFile2( TFile file ) throws IOException {
         super(URI.create("file:///" + file.getCanonicalPath()), Kind.CLASS);
         this.file = file;
     }
@@ -292,11 +349,11 @@ class JavaClassFile extends SimpleJavaFileObject {
 }
 
 @SuppressWarnings({"unchecked", "ResultOfMethodCallIgnored"})
-class ClassFileManager extends ForwardingJavaFileManager {
+class ClassFileManager2 extends ForwardingJavaFileManager {
 
     private File  destinationJarFile;
 
-    public ClassFileManager( StandardJavaFileManager standardManager, File destination ) {
+    public ClassFileManager2( StandardJavaFileManager standardManager, File destination ) {
         super(standardManager);
         this.destinationJarFile = destination;
     }
@@ -315,6 +372,6 @@ class ClassFileManager extends ForwardingJavaFileManager {
         TFile file = new TFile(destinationJarFile, relativeFileName);
 
 //        file.getParentFile().mkdirs();
-        return new JavaClassFile(file);
+        return new JavaClassFile2(file);
     }
 }

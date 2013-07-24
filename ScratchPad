@@ -4,6 +4,7 @@ TODO:  (ahead of the cut)
 
 
 TODO running JC should run tests and fail if they fail
+TODO override project name from config
 
 TODO dependency files support exclude scope
 
@@ -12,6 +13,8 @@ TODO package FATJAR
 TODO package IVYJAR
 TODO package MAVENJAR
 TODO manifest line limit for class path
+
+TODO support empty release name; designed for CI builds
 
 #com.mosaic         : threadtesting-mosaic : 0.0.1-SNAPSHOT     <test>
 
@@ -45,7 +48,23 @@ support 'jc <dir>'
 
 test jar has Main that fires junit off
 
+    // default: 1 jar for impl, 1 jar for tests
+    // config:    jars=mod1,mod2,mod1+mod2
+    // config:    jars=label1(mod1),label2(mod2),label3(mod1+mod2)     # if overridden then every module must be specified
+
+    // compile dir
+    // compile moduleName
+
+    // module to jar;   what about dependents?
+
+    // compile      -- detect src and test directories
+
+
 ----
+
+
+
+---
 
 mind set:  small yet powerful unix command line tools
            this way tools are offered to use jc, or parts of jc in any build
@@ -65,6 +84,21 @@ Cloud Mosaic
 Software Mosaic
 Mega Maid
 Red 6
+
+
+
+
+--
+
+ how to do dependency management?
+
+ - on clash, select highest version
+ - on clash, check whether highest version is backwards compatible with lowest version (if not, error)
+ - what is min version of java for libs?
+
+
+ - suggest unused libs?
+
 
 
 repos
