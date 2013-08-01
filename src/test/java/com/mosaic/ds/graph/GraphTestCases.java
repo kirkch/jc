@@ -1,7 +1,7 @@
 package com.mosaic.ds.graph;
 
-import com.mosaic.jk.utils.MapUtils;
-import com.mosaic.jk.utils.SetUtils;
+import com.mosaic.jc.utils.MapUtils;
+import com.mosaic.jc.utils.SetUtils;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -427,20 +427,6 @@ public abstract class GraphTestCases {
         } catch ( UnsupportedOperationException e ) {
 
         }
-
     }
 
-
-    //
-    //
-    //
-    //
-    //
-    //
-
-
-
-
-
-    // iterations - depth first, breadth first, cost walking algorithms...
 }

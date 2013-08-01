@@ -14,6 +14,48 @@
     <dependencies>
 
         <dependency>
+            <groupId>org.eclipse.aether</groupId>
+            <artifactId>aether-impl</artifactId>
+            <version>0.9.0.M2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.aether</groupId>
+            <artifactId>aether-connector-file</artifactId>
+            <version>0.9.0.M2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.tesla.maven</groupId>
+            <artifactId>maven-aether-provider</artifactId>
+            <version>3.1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.aether</groupId>
+            <artifactId>aether-connector-asynchttpclient</artifactId>
+            <version>0.9.0.M2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.aether</groupId>
+            <artifactId>aether-connector-wagon</artifactId>
+            <version>0.9.0.M2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.maven.wagon</groupId>
+            <artifactId>wagon-ssh</artifactId>
+            <version>1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.sonatype.maven</groupId>
+            <artifactId>wagon-ahc</artifactId>
+            <version>1.2.1</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.apache.ivy</groupId>
             <artifactId>ivy</artifactId>
             <version>2.2.0</version>
@@ -78,7 +120,7 @@
                     <!--</descriptorRefs>-->
                     <!--<archive>-->
                       <!--<manifest>-->
-                        <!--<mainClass>com.mosaic.jk.Main</mainClass>-->
+                        <!--<mainClass>Main</mainClass>-->
                       <!--</manifest>-->
                       <!--&lt;!&ndash;<manifestEntries>&ndash;&gt;-->
                         <!--&lt;!&ndash;<Group-Id>${project.groupId}</Group-Id>&ndash;&gt;-->
@@ -110,7 +152,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>com.mosaic.jk.Main</mainClass>
+                            <mainClass>com.mosaic.jc.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

@@ -1,10 +1,10 @@
 package com.mosaic.ds.graph;
 
-import com.mosaic.jk.utils.Function0;
-import com.mosaic.jk.utils.Function1;
-import com.mosaic.jk.utils.ListUtils;
-import com.mosaic.jk.utils.VoidFunction1;
-import com.mosaic.jk.utils.reflection.ClassFactory;
+import com.mosaic.jc.utils.Function0;
+import com.mosaic.jc.utils.Function1;
+import com.mosaic.jc.utils.ListUtils;
+import com.mosaic.jc.utils.VoidFunction1;
+import com.mosaic.jc.utils.reflection.ClassFactory;
 
 import java.util.*;
 
