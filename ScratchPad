@@ -49,16 +49,80 @@ support 'jc <dir>'
 test jar has Main that fires junit off
 
 
-    // default: 1 jar for impl, 1 jar for tests
-    // config:    jars=mod1,mod2,mod1+mod2
-    // config:    jars=label1(mod1),label2(mod2),label3(mod1+mod2)     # if overridden then every module must be specified
-
     // compile dir
     // compile moduleName
 
     // module to jar;   what about dependents?
 
     // compile      -- detect src and test directories
+
+
+in file artifacts file
+
+
+artifactName: artifactType(modulesToIncludeInArtifact,...)
+
+
+moduleJarName: jar(m1+m2)
+cpt_server: thinExecutableJar(server+client)
+cpt_server: libJar(server+client)
+cpt_server: war(server+client)
+cpt_server: ear(server+client)
+
+
+
+
+
+graph:
+
+component  (compiles to jar1,jar2,jar3)   -- depends on a,b,c,d
+
+
+
+
+version handling mk2
+----------
+
+
+follows semantic versioning format:   major.minor.patch[-label]
+
+starts by default on first build at: 0.0.1-label
+and label is the username of the account running jc
+
+each subsequent build increments the patch number
+major and minor are overridable within the meta config file. when they are changed
+the patch number resets back to 1 (for next build)
+
+the label may be specified at runtime for a build, and may be blank (common value for CI build)
+
+
+
+ideal CI/CD server
+------------
+
+uses the version number the build to identify each run
+
+
+typical pipeline:
+
+compile+package+unittest     - fast functional testing    - deploy to integration testing env   -  deploy to demo area
+(goal seconds to minutes)    (mocks intersystem chatter)     (wipe, smoke test, and int test..     (don't wipe, smoke test,
+                                                               inc two rounds of continuous test    and leave continuous tests running)
+                                                                   may take some time)
+
+
+system wide
+
+  once all components deployed              perform system wide
+  smoke tests passing                       continuous tests
+  continuous tests passed atleast once
+
+
+
+
+
+
+
 
 
 ----

@@ -21,6 +21,12 @@ public class ModuleConfig {
     public String packageType;
 
 
+    /**
+     * Name of the jar files that the source files in this module are to
+     * be compiled/copied into.
+     */
+    public List<String> packageInJarNames = new ArrayList<String>();
+
     public List<Dependency> dependencies = new ArrayList<Dependency>();
 
 }

@@ -1,13 +1,17 @@
 package com.mosaic.jc.config;
 
-import com.mosaic.jc.config.ArtifactParser;
+import com.mosaic.jc.utils.SetUtils;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static junit.framework.Assert.assertNull;
+import static org.junit.Assert.assertEquals;
+
 
 /**
  *
  */
+@Ignore // TODO working here
 public class ArtifactParserTest {
 
     private ArtifactParser parser = new ArtifactParser();
@@ -38,7 +42,20 @@ public class ArtifactParserTest {
         assertNull( parser.invoke("    \t# foo bar") );
     }
 
-    // givenWellFormedSingleModuleLine_expectSuccessfulParse
+    @Test
+    public void givenWellFormedSingleModule_expectSuccessfulParse() {
+        ArtifactDeclaration art = parser.invoke("client: jar(m1)");
+
+        ArtifactDeclaration expected = new ArtifactDeclaration(
+                "client",
+                "jar",
+                SetUtils.asSet("m1")
+        );
+
+        assertEquals( expected, art );
+    }
+
+
     // givenWellFormedMultiModuleLine_expectSuccessfulParse
     // givenEmptyModuleSection_expect
 }
